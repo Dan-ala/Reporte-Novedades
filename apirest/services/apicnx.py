@@ -11,13 +11,23 @@ class Usuario:
         self.res=requests.get(self.url+"/to")
         data1=json.loads(self.res.content)
         return data1
-    def ListarUno(self,cual=0):    
-        self.res=requests.get(self.url+"/"+str(cual))
-        data1=json.loads(self.res.content)
-        if data1!=[]:
-            return(data1)
-        else:
-            return False  
+
+    def ListarUno(self, cual=0):
+        try:
+            self.res = requests.get(self.url + "/" + str(cual))
+            if self.res.status_code == 200:
+                data1 = json.loads(self.res.content)
+                if data1 != []:
+                    return data1
+                else:
+                    return None
+            else:
+                print("Error: ", self.res.status_code)
+                return None
+        except Exception as e:
+            print("An error occurred:", e)
+            return None
+
     def Inserte(self,data):
             response = requests.post(self.url+"/i", json=data)
     def Borra(self,cual):

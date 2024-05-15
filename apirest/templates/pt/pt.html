@@ -1,0 +1,209 @@
+<script>
+    function Ir(cual){
+        document.forms['mio'].action="/puesto_trabajo/"+cual
+        document.forms['mio'].submit();
+       }function Ir1(cual){
+        location.href=cual
+       }
+        function Confirmar(que,donde){
+            if (confirm(que))
+              location.href=donde
+        }
+       function Va(tipo){
+        if(tipo=="i")
+        document.forms['mio'].action="/puesto_trabajo/i"
+        if(tipo=="u"){
+         
+         document.forms['mio'].action="/puesto_trabajo/u"   
+        }
+        document.forms['mio'].submit();    
+       }
+    </script>
+    <center>
+
+{% extends "./base.html" %}
+
+{% block title %}PUESTO DE TRABAJO{% endblock %}
+
+{% block content %}
+
+<!-- EDILISTAR REGISTROS -->
+{% if N == 0 %}
+<table class="w3-table w3-striped w3-border" border="1">   
+    <thead>
+        <tr>
+            <th scope="col">Elemento</th>
+            <th scope="col">Registrar Novedad</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for key, value in cadena_dict.items() %}
+        <tr>
+            <td>{{ value }}</td>
+            <td>
+                <button type="submit" onclick="Ir1('/novedades/registrar/novedad/{{ key }}')" class="w3-round w3-button w3-orange">Register Novelty</button>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>    
+</table>
+<br>
+<button class="w3-blue" onclick="history.back()">Regresar</button>
+{% endif %}
+
+<!--CREAR UN REGISTRO-->
+{% if N == '1' %}
+<div class="w3-responsive">
+    <br>
+    <table class="w3-striped w3-centered">
+        <tr>
+            <td colspan=2 class="w3-green">CREANDO REGISTRO...</td>
+        </tr>
+        <tr>
+            <form name="mio" method="POST" class="w3-bordered">
+                <td>Seleccione el tipo de elemento:</td>
+                <td>
+                    <select name="idTipoElemento" id="idTipoElemento" class="w3-select" required>
+                        {% for x in tipo_elementos %}
+                            <option value="{{ x[0] }}">{{ x[1] }}</option>
+                        {% endfor %}
+                    </select>
+                    <br><br>
+                </td>
+        </tr>
+        <tr>
+            <td>Nombre del Elemento:</td>
+            <td>
+                <input class="w3-input w3-border w3-hover-yellow" type="text" name="nombreElemento" required maxlength="45">
+            </td>
+        </tr>
+        <tr>
+            <td>Barcode:</td>
+            <td>
+                <input class="w3-input w3-border w3-hover-yellow" type="text" name="barcode" required maxlength="45">
+            </td>
+        </tr>
+        <tr>
+            <td colspan=2>
+                <input type="button" value="Grabar" onclick="Va('i')" class="w3-button w3-green w3-half w3-round">
+                <input type="button" value="Regresar" onclick="Ir1('/niveles/l')" class="w3-round w3-button w3-black">
+            </td>
+        </tr>
+    </table>
+</form>
+</div>
+{% endif %}
+
+
+<!--EDITAR UN REGISTRO-->
+{%if N == 2 %}
+<center>
+    <div class="w3-responsive"><br>
+<table class="w3-striped  w3-centered">
+    <tr>
+<form name=mio method=POST>
+    <tr><td colspan=2 class="w3-green">EDITAR PUESTO DE TRABAJO...</td></tr>
+    {% for x in one_workstation %}
+    <td>Nombre del Puesto de Trabajo:</td><td><input type=text name=nombrePT id=nombrePT value="{{ x[1] }}" required></td></tr>
+    {% endfor %}
+</table>
+</form>
+<br>
+<input type="submit" value="Grabar" onclick="Va('u')" class="w3-green">
+<br><br>
+<button class="w3-blue" onclick="history.back()">Regresar</button>
+</div>
+{%endif%}
+
+
+<!-- LISTAR REGISTROS -->
+{% if N == 7 %}
+<table class="w3-striped w3-padding-large sena-p100">
+    <td width="50%">
+        <center>
+            <table class="sena__information-card-text w3-striped  w3-centered sena-p100">
+                <tr>
+                    <td colspan=2>
+                        <h5 class="sena-sombra w3-green sena-p100 ">CREAR PUESTO DE TRABAJO</h5>
+                        </header>
+                    </td>
+                </tr>
+                <tr>
+                    <form name=mio method=POST action="/puesto_trabajo/i" class="row g-3 ">
+                <td>Nombre del Puesto de Trabajo:</font>
+                </td>
+                <td><input class="sena-fondo" type="text" id="nombrePT" name="nombrePT" required><br></td>
+                </tr>
+            </table>
+            <br>
+            <input type="submit" value="Grabar" class="w3-green">
+            </form>
+    </td>
+    <td>&nbsp;&nbsp;</td>
+    <td>
+        <div class="sena-p100">
+            <table class="table  sena__information-card-text table-striped sena-p100" style="width: 70%;">
+                {% for x in cadena %}
+                <td>
+                    <font size=1 color=black><b>{{x[1]}}</font></b>
+                </td>
+                <td width="145px" style="background-color: none;">
+                    <button class="btn w3-blue w3-hover-yellow" alt="Visualizar"
+                    onclick="Ir1('/puesto_trabajo/pt/{{ x[0] }}')" title="Visualizar"><i
+                        class="fa fa-eye"></i></button>
+                    <button class="btn w3-green w3-hover-yellow" alt="Editar"
+                        onclick="Ir1('/puesto_trabajo/e/{{x[0]}}')" title="Editar"><i
+                            class="fa fa-pencil"></i></button>
+                    <button class="btn w3-red w3-hover-yellow"
+                        onclick='Confirmar("Desea Borrar el registro?","/puesto_trabajo/d/{{x[0]}}")'
+                        title="Borrar"><i class="fa fa-trash"></i></button>
+                </td>
+                </tr>
+                {% endfor %}
+                </tr>
+            </table>
+        </div>
+        </tr>
+</table>
+<button class="w3-blue" onclick="history.back()">Regresar</button>
+
+<!-- just in case -->
+<!-- <table class="w3-table w3-striped w3-border" border="1">   
+    <thead>
+        <tr>
+            <th scope="col">ID Puesto de Trabajo</th>
+            <th scope="col">Nombre Puesto de Trabajo</th>
+            <th scope="col">Visualizar Elementos</th>
+        </tr>
+    </thead>
+    <tbody>
+      {% for x in cadena %}
+      <tr>
+          <td>{{ x[0] }}</td>
+          <td>{{ x[1] }}</td>
+          <td><button class="w3-yellow"><a href="/puesto_trabajo/pt/{{ x[0] }}">Visualizar Elementos</a></button></td>  
+      </tr>
+      {% endfor %}
+  </tbody>    
+</table>
+<button class="w3-blue" onclick="history.back()">Regresar</button>
+{% endif %} -->
+
+
+{%if N == '1000' %}
+<center>
+    <div class="w3-card">
+        <div class="w3-container w3-center w3-green">
+            <h1>CENTRO DE PRODUCCION DE SOLUCIONES INTELIGENTES -CPSI-</h1>
+          </div>
+          <img src="{{url_for('static',filename='images/CPSI.png')}}">
+       </div>
+       <script>
+        function Voy(){
+        location.href="/niveles/l"
+        }
+        setTimeout('Voy()',5000)
+    </script>
+{%endif%}
+
+{% endblock %}

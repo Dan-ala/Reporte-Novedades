@@ -1,0 +1,50 @@
+<script>
+    function Ir(cual){
+        document.forms['mio'].action="/instruc/"+cual
+        document.forms['mio'].submit();
+       }function Ir1(cual){
+        location.href=cual
+       }
+        function Confirmar(que,donde){
+            if (confirm(que))
+              location.href=donde
+        }
+       function Va(tipo){
+        if(tipo=="i")
+        document.forms['mio'].action="/puesto_trabajo/i"
+        if(tipo=="u"){
+         
+         document.forms['mio'].action="/puesto_trabajo/u"   
+        }
+        document.forms['mio'].submit();    
+       }
+    </script>
+
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="login-page">
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+{% for message in messages %}
+<script>
+    Swal.fire({
+        title: "{{ message }}",
+        icon: "error"
+    });
+</script>
+{% endfor %}
+{% endif %}
+{% endwith %}
+    <h2>Login</h2>
+    <div class="form">
+        <form name="mio" class="login-form" method="POST">
+            <input type="number" id="cedula" name="cedula" placeholder="Cédula" />
+            <input type="text" id="emailInstructor" name="emailInstructor" placeholder="E-mail" />
+            <input type="submit" style="background-color: aqua;" value="Login">
+            <!-- <p class="message">Not registered? <a href="#">Create an account</a></p> -->
+        </form>
+    </div>
+</div>
+{% endblock %}
