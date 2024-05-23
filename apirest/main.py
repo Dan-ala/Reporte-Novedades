@@ -93,6 +93,13 @@ def ss():
     todo = con.Consultar("./novedades.db", sql)
     return json.dumps(todo)
 
+@app.route("/puestos/trabajo/add/elements/<id>")
+def sxs(id):
+    sql = "SELECT * from puesto_elemento where idPuestoTrabajo="+str(id)
+    con = cnxsqlite()
+    todo = con.Consultar("./novedades.db", sql)
+    return json.dumps(todo)
+
 @app.route("/puestos/trabajo/<id>")
 def pepe(id):
     sql="select * from puesto_trabajo where idPuestoTrabajo="+str(id)

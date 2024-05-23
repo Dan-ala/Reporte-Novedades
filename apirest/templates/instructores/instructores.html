@@ -3,7 +3,6 @@
         document.forms['mio'].action="/instructores/"+cual
         document.forms['mio'].submit();
      
-     
        }function Ir1(cual){
         location.href=cual
        }
@@ -101,6 +100,7 @@
       </form>
       <br><br><br><br><br>
 </td>
+    </table>
 
 <table class="instructores">
     <h2>INSTRUCTORES DE LA CALLE 52</h2>
@@ -210,22 +210,5 @@
     <br><br><br><br><br>
 </td>
   {% endif %}
-
-
-{%if N == '1000' %}
-<center>
-    <div class="w3-card">
-        <div class="w3-container w3-center w3-green">
-            <h1>CENTRO DE PRODUCCION DE SOLUCIONES INTELIGENTES -CPSI-</h1>
-          </div>
-          <img src="{{url_for('static',filename='images/CPSI.png')}}">
-       </div>
-       <script>
-        function Voy(){
-        location.href="/niveles/l"
-        }
-        setTimeout('Voy()',5000)
-    </script>
-{%endif%}
 
 {% endblock %}

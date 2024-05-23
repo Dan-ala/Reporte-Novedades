@@ -34,30 +34,73 @@
 
 {% if N == 0  %}
 <!--EDILISTAR REGISTROS-->
-<table class="w3-table w3-striped w3-border" border="1">   
+<table class="w3-striped w3-padding-large sena-p100">
+    <td width=50%>
+      <center>
+        <table class="w3-striped w3-centered">
+            <tr>
+                <td colspan=2 class="w3-green">CREANDO ELEMENTO...</td>
+            </tr>
+            <tr>
+                <form name="mio" method="POST" class="w3-bordered">
+                    <td>Seleccione el tipo de elemento:</td>
+                    <td>
+                        <select name="idTipoElemento" id="idTipoElemento" class="w3-select" required>
+                            {% for x in tipo_elementos %}
+                                <option value="{{ x[0] }}">{{ x[1] }}</option>
+                            {% endfor %}
+                        </select>
+                        <br><br>
+                    </td>
+            </tr>
+            <tr>
+                <td>Nombre del Elemento:</td>
+                <td>
+                    <input class="w3-input w3-border w3-hover-yellow" type="text" name="nombreElemento" required maxlength="45">
+                </td>
+            </tr>
+            <tr>
+                <td>Barcode:</td>
+                <td>
+                    <input class="w3-input w3-border w3-hover-yellow" type="text" name="barcode" required maxlength="45">
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <input type="button" value="Grabar" class="w3-button w3-round w3-green" onclick="Va('i')">
+                    <input type="button" value="Regresar" onclick="history.back()" class="w3-round w3-button w3-black">
+                </td>
+            </tr>
+        </table>
+    </form>
+</td>
+</table>
+<br><br><br><br>
+<table class="instructores">
+    <h2>Lista de Elementos</h2>
     <thead>
         <tr>
-            <th scope="col">Elemento</th>
-            <th scope="col">Update</th>
-            <th scope="col">Delete</th>
+            <th id="j" scope="col">Elemento</th>
+            <th id="j" scope="col">Update</th>
+            <th id="j" scope="col">Delete</th>
         </tr>
     </thead>
     <tbody>
         {% for row in cadena %}
         <tr>
-            <td>{{ row[2] }}</td>
+            <td id="k" data-cell="Nombre del Elemento">{{ row[2] }}</td>
             <td>
-                <button class="w3-blue" onclick="Ir1('/niveles/e/{{ row[0] }}')"><i class="fa fa-pencil"></i>&nbsp;Editar</button></td>  
+                <button class="w3-button w3-round w3-blue" onclick="Ir1('/niveles/e/{{ row[0] }}')"><i class="fa fa-pencil"></i>&nbsp;</button></td>  
             <td>
-                <button class="w3-red" onclick='Confirmar("Desea Borrar el registro?","/niveles/d/{{row[0]}}")'>
-                    <i class="fa fa-trash"></i>&nbsp;Eliminar</button>
+                <button class="w3-button w3-round w3-red" onclick='Confirmar("Desea Borrar el registro?","/niveles/d/{{row[0]}}")'>
+                    <i class="fa fa-trash"></i>&nbsp;</button>
             </td>  
           </tr>
           {% endfor %}  
     </tbody>
 </table>
 <br><br>
-<button class="w3-blue" onclick="history.back()">Regresar</button>
+<button class="w3-button w3-round w3-black" onclick="history.back()">Regresar</button>
 {%endif%}
 
 
@@ -134,22 +177,6 @@
 </table>
 </form>
 </div>
-{%endif%}
-
-{%if N == '1000' %}
-<center>
-    <div class="w3-card">
-        <div class="w3-container w3-center w3-green">
-            <h1>CENTRO DE PRODUCCION DE SOLUCIONES INTELIGENTES -CPSI-</h1>
-          </div>
-          <img src="{{url_for('static',filename='images/CPSI.png')}}">
-       </div>
-       <script>
-        function Voy(){
-        location.href="/niveles/l"
-        }
-        setTimeout('Voy()',5000)
-    </script>
 {%endif%}
 
 {% endblock %}

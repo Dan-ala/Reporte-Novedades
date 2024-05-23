@@ -134,3 +134,12 @@ footer {
 .container .info span .fa {
   color: #EF3B3A;
 }
+
+
+
+
+
+/*MULTI-SELECT DROPDOWN*/
+.duru option{
+  margin-left: 30em;
+}

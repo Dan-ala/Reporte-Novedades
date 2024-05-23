@@ -215,12 +215,12 @@ function Ir1(url, workstationName, elementName) {
                     <input type="hidden" id="idPuestoTrabajo" name="idPuestoTrabajo" value="">
                     <tr>
                         <td>
-                            <select name="idElemento" id="idElemento" class="w3-select">
+                            <select name="idElemento" id="idElemento" multiple  multiselect-search="true" multiselect-select-all="true" multiselect-max-items="5">
+                                {% if elements not in pts %}
                                 {% for x in elements %}
-                                {% if x[0] not in pts %}
                                 <option value="{{ x[0] }}">{{ x[2] }}</option>
-                                {% endif %}
                                 {% endfor %}
+                                {% endif %}
                             </select>
                         </td>
                     </tr>
@@ -236,6 +236,7 @@ function Ir1(url, workstationName, elementName) {
         <br><br><br><br><br>
     </div>
     <script src="{{ url_for('static', filename='js/2.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/multi-select.js') }}"></script>
         {% endif %}
 
 
@@ -263,22 +264,5 @@ function Ir1(url, workstationName, elementName) {
                 <button class="w3-blue" onclick="history.back()">Regresar</button>
             </div>
             {% endif %}
-
-
-            {%if N == '1000' %}
-            <center>
-                <div class="w3-card">
-                    <div class="w3-container w3-center w3-green">
-                        <h1>CENTRO DE PRODUCCION DE SOLUCIONES INTELIGENTES -CPSI-</h1>
-                    </div>
-                    <img src="{{url_for('static',filename='images/CPSI.png')}}">
-                </div>
-                <script>
-                    function Voy() {
-                        location.href = "/niveles/l"
-                    }
-                    setTimeout('Voy()', 5000)
-                </script>
-                {%endif%}
 
                 {% endblock %}

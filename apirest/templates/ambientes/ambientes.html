@@ -189,21 +189,4 @@
         </div>
         {%endif%}
 
-
-        {%if N == '1000' %}
-        <center>
-            <div class="w3-card">
-                <div class="w3-container w3-center w3-green">
-                    <h1>CENTRO DE PRODUCCION DE SOLUCIONES INTELIGENTES -CPSI-</h1>
-                </div>
-                <img src="{{url_for('static',filename='images/CPSI.png')}}">
-            </div>
-            <script>
-                function Voy() {
-                    location.href = "/niveles/l"
-                }
-                setTimeout('Voy()', 5000)
-            </script>
-            {%endif%}
-
             {% endblock %}

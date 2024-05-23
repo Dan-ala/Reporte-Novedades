@@ -1,6 +1,16 @@
-footer{
-    width:70%;
-    background-color:#39A900
+footer {
+    width: 70%;
+    background-color: #39A900;
+    margin-right: 18%;
+}
+
+@media (max-width: 700px) {
+    footer {
+        width: 70%;
+        background-color: #39A900;
+        margin-left: 0;
+        margin-right: 0;
+    }
 }
 
 p{

@@ -3,11 +3,22 @@ from flask import Flask, redirect,request,session,flash, url_for
 from flask import render_template
 import requests
 from services.apicnx import Usuario
-from config import configura     
+from config import configura
+
+from flask_mail import Mail, Message
   
 app=Flask(__name__)
 
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+app.config['MAIL_PORT'] = 465
+app.config['MAIL_USERNAME'] = 'danielala14fi@gmail.com'
+app.config['MAIL_PASSWORD'] = 'ykvh btdc hbzb akxg'
+app.config['MAIL_USE_TLS'] = False
+app.config['MAIL_USE_SSL'] = True
+
 app.secret_key = 'your_secret_key'
+
+mail = Mail(app)
 
 #LOGIN
 @app.route("/login", methods=["GET", "POST"])
@@ -210,14 +221,14 @@ def add_elements():
 
 
 #NEW NOVELTY:
-@app.route("/novedades/i", methods=["POST"])
+@app.route("/novedades/i", methods=["GET","POST"])
 def new_novelty():
     idPuestoTrabajo = request.form.get('idPuestoTrabajo')
     idElemento = request.form.get('idElemento')
     descripcion_novedad = request.form.get('descripcion_novedad')
-    print(f"idPuestoTrabajo: {idPuestoTrabajo}")
-    print(f"idElemento: {idElemento}")
-    print(f"descripcion_novedad: {descripcion_novedad}")
+    # print(f"idPuestoTrabajo: {idPuestoTrabajo}")
+    # print(f"idElemento: {idElemento}")
+    # print(f"descripcion_novedad: {descripcion_novedad}")
 
     nove= Usuario("http://127.0.0.1:5000/novedades")
     datos = {
@@ -228,8 +239,47 @@ def new_novelty():
     # Debug print before insertion
     print("Datos to insert:", datos)
     nove.Inserte(datos)
-    id=0
-    msgitos = "Novedad registrada"
+    id=0    
+
+    #checking accountants
+    instructors = requests.get("http://127.0.0.1:5000/instructores")
+    cadena = instructors.json()
+
+    ambi = requests.get("http://127.0.0.1:5000/ambientes/to")
+    cadena2 = ambi.json()
+
+    id_puesto_trabajo = requests.get("http://127.0.0.1:5000/puestos/trabajo")
+    id_elemento = requests.get("http://127.0.0.1:5000/usua/to")
+
+    idPT = id_puesto_trabajo.json()
+    idElemento = id_elemento.json()
+
+# Find the professor responsible for the specified element
+    professor_email = None
+    for instructor in cadena:
+        for classroom in cadena2:  # Classroom belongs to the professor
+            if classroom[0] == instructor[2]:
+                professor_email = instructor[4]
+
+                print("Professor email:", professor_email)  # Debug print professor email
+
+                if professor_email:
+                    if request.method == 'POST':
+                        try:
+                            msg = Message("Hi there!", sender="danielala14fi@gmail.com", recipients=[professor_email])
+                            msg.body = f"Learning Classroom: {classroom[2]} \n A novelty has been added to your learning classroom: {descripcion_novedad}"
+                            mail.send(msg)
+                            msgitos = "Novedad registrada y correo enviado al profesor correspondiente."
+                        except Exception as e:
+                            print(f"Error sending email: {e}")
+                            msgitos = "Novedad registrada pero hubo un error al enviar el correo."
+                else:
+                    msgitos = "Novedad registrada pero no se encontró el profesor correspondiente para enviar el correo."
+
+                break
+        if professor_email:
+            break
+
     return render_template("alertas.html", msgito=msgitos,idPuestoTrabajo=idPuestoTrabajo, idElemento=idElemento)
 
 #REGISTRO DE NOVEDAD
@@ -339,7 +389,7 @@ def ActualizaInstructor():
 @app.route("/instructores/e/<id>", methods=["GET"])
 def EditaInstructor(id):
     instructor = requests.get("http://127.0.0.1:5000/instructor/"+id)
-    ambi = requests.get("http://127.0.0.1:5000/ambientes/to")
+    ambi = requests.get("http://127.    0.0.1:5000/ambientes/to")
     cadena2 = ambi.json()
     t_instructor = requests.get("http://127.0.0.1:5000/tipo/instructor")
     tipo_inst = t_instructor.json()
@@ -471,7 +521,8 @@ def InstructorList():
     cadena = instructors.json()
     cadena2 = ambi.json()
     tipo_inst = t_instructors.json()
-    # print (f" Instructors: {cadena} \n and Learning Classrooms: {cadena2} \n and type of instructors: {tipo_inst}")
+    print (f"Posicion 1: {cadena[0][1]}")
+    print (f" Instructors: {cadena} \n and Learning Classrooms: {cadena2} \n and type of instructors: {tipo_inst}")
     can = len(cadena)
 
     #testing
