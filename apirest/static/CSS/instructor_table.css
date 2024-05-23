@@ -1,0 +1,43 @@
+.instructores{
+    width: 100%;
+    padding: 1rem;
+}
+
+#j, #k{
+    padding: 1rem;
+}
+
+#j{
+    background-color: #4CAF50!important;
+}
+
+@media (max-width: 650px) {
+    #j {
+        display: none;
+    }
+    #k {
+        display: grid;
+        gap: 0.6rem;
+        grid-template-columns: 15ch auto;
+        padding: 0.5rem 1rem;
+    }
+
+    #k:first-child {
+        padding-top: 2rem;
+    }
+
+    #k:last-child {
+        padding-bottom: 2rem;
+    }
+
+    #k::before{
+        content: attr(data-cell) ": ";
+        font-weight: 700;
+        text-transform: capitalize;
+    }
+
+    button{
+        width: min-content;
+        height: min-content;
+    }
+}

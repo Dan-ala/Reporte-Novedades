@@ -29,8 +29,10 @@ class Usuario:
             return None
 
     def Inserte(self,data):
-            response = requests.post(self.url+"/i", json=data)
+        response = requests.post(self.url+"/i", json=data)
     def Borra(self,cual):
         response = requests.delete(self.url+"/d/"+str(cual))
+    def BorraTodo(self):
+        response = requests.delete(self.url+"/d")
     def Actualiza(self,data):
         response = requests.put(self.url+"/u", json=data)

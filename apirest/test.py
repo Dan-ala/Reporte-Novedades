@@ -25,8 +25,7 @@ def createDB():
         FOREIGN KEY(idAmbiente) REFERENCES ambiente(idAmbiente)
     );
 
-    INSERT INTO instructor (idTipoInstructor, idAmbiente, cedula, emailInstructor)
-    VALUES (1, 1, 1021396143, "dsalarcon3@sena.edu.co");
+
 
     CREATE TABLE tipo_elemento (
         idTipoElemento INTEGER PRIMARY KEY,
@@ -45,19 +44,14 @@ def createDB():
         FOREIGN KEY(idTipoElemento) REFERENCES tipo_elemento(idTipoElemento)
     );
 
-    INSERT INTO elemento (idTipoElemento, nombreElemento, barcode)
-    VALUES (1, "CPU", "01330132"),
-           (2, "Mouse", "01234567"),
-           (2, "Keyboard", "98765432");
+
 
     CREATE TABLE puesto_trabajo (
         idPuestoTrabajo INTEGER PRIMARY KEY,
         nombrePT TEXT NOT NULL
     );
 
-    INSERT INTO puesto_trabajo (nombrePT)
-    VALUES ("PT1"),
-           ("PT2");
+
 
 
     CREATE TABLE puesto_elemento (
@@ -69,10 +63,7 @@ def createDB():
     );
 
 
-    INSERT INTO puesto_elemento (idPuestoTrabajo, idElemento)
-    VALUES (1, 1),
-           (2, 2),
-           (2, 3);
+
 
     CREATE TABLE ambiente (
         idAmbiente INTEGER PRIMARY KEY,
@@ -81,8 +72,7 @@ def createDB():
         FOREIGN KEY(idPuestoTrabajo) REFERENCES puesto_trabajo(idPuestoTrabajo)
     );
 
-    INSERT INTO ambiente (idPuestoTrabajo, nombreAmbiente)
-    VALUES (1, "AMBIENTE 412");
+
     
 
     CREATE TABLE novedades (
@@ -102,55 +92,47 @@ def createDB():
         FOREIGN KEY(idElemento) REFERENCES elemento(idElemento),
         PRIMARY KEY(idNovedad, idElemento)
     );
+
+    
+    
+    CREATE TRIGGER delete_element_trigger
+    AFTER DELETE ON elemento
+    FOR EACH ROW
+    BEGIN
+        DELETE FROM puesto_elemento WHERE idElemento = OLD.idElemento;
+    END;
+
+    CREATE TRIGGER delete_workstation_trigger
+    AFTER DELETE ON puesto_trabajo
+    FOR EACH ROW
+    BEGIN
+        DELETE FROM puesto_elemento WHERE idPuestoTrabajo = OLD.idPuestoTrabajo;
+    END;
     """
     
     cur.executescript(create_statements)
     con.commit()
     con.close()
 
-def insert_general_novelty(idPuestoTrabajo, descripcion_novedad):
-    con = sql.connect("novedades.db")
-    cur = con.cursor()
-    cur.execute("INSERT INTO novedades (idPuestoTrabajo, descripcion_novedad) VALUES (?, ?)",
-                (idPuestoTrabajo, descripcion_novedad,))
-    con.commit()
-    con.close()
-
-def insert_element_novelty(idPuestoTrabajo, idElemento, descripcion_novedad):
-    con = sql.connect("novedades.db")
-    cur = con.cursor()
-    cur.execute("INSERT INTO novedades (idPuestoTrabajo, idElemento, descripcion_novedad) VALUES (?, ?, ?)",
-                (idPuestoTrabajo, idElemento, descripcion_novedad,))
-    con.commit()
-    con.close()
-
-def get_novelties_report():
-    con = sql.connect("novedades.db")
-    cur = con.cursor()
-    cur.execute("SELECT * FROM novedades")
-    novelties = cur.fetchall()
-    con.close()
-    return novelties
-
 if __name__ == "__main__":
     createDB()
     
-    # Insert a general novelty for the desktop
-    insert_general_novelty(2,"General novelty for desktop")
+    # # Insert a general novelty for the desktop
+    # insert_general_novelty(2,"General novelty for desktop")
     
-    # Insert a novelty for a specific element
-    insert_element_novelty(1, 1, "Novelty for CPU")
+    # # Insert a novelty for a specific element
+    # insert_element_novelty(1, 1, "Novelty for CPU")
 
-    # Retrieve the inserted novelties
-    novelties = get_novelties_report()
-    print("All Novelties:")
-    for novelty in novelties:
-        print("ID:", novelty[0])
-        if novelty[2]:  # Check if the novelty is associated with an element
-            print("Element ID:", novelty[2])
-            print("Description:", novelty[3])
-        else:
-            print("General Desktop Novelty")
-            print("Description:", novelty[3])
-        print("Date:", novelty[4])
-        print()
+    # # Retrieve the inserted novelties
+    # novelties = get_novelties_report()
+    # print("All Novelties:")
+    # for novelty in novelties:
+    #     print("ID:", novelty[0])
+    #     if novelty[2]:  # Check if the novelty is associated with an element
+    #         print("Element ID:", novelty[2])
+    #         print("Description:", novelty[3])
+    #     else:
+    #         print("General Desktop Novelty")
+    #         print("Description:", novelty[3])
+    #     print("Date:", novelty[4])
+    #     print()

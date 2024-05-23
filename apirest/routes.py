@@ -119,6 +119,15 @@ def index5():
 @app.route("/ambientes/<id>", methods=["GET","POST"])
 def learning_classroom(id=0):
     return render_template("./ambientes/ambientes.html", N=id)
+
+#52
+@app.route("/puestos/trabajo/add/elements/0", methods = ["GET","POST"])
+def index6():
+    return render_template("./pt/pt.html", N="0")
+
+@app.route("/puestos/trabajo/add/elements/<id>", methods=["GET","POST"])
+def l(id=0):
+    return render_template("./pt/pt.html", N=id)
     
 #NEW ELEMENT:
 @app.route("/niveles/i", methods=["POST"])
@@ -166,8 +175,8 @@ def InstructorsInsert():
         "cedula": cedula,
         "emailInstructor": emailInstructor
     }
-
     instructor.Inserte(datos)
+    id=0
     msgitos = "Instructor creado"
     return render_template("alertas.html", msgito=msgitos)
 
@@ -184,38 +193,74 @@ def WorkstationInsert():
     msgitos = "Puesto de Trabajo creado"
     return render_template("alertas.html", msgito=msgitos)
 
+#ADD ELEMENTS TO A WORKSTATION:
+@app.route("/puestos/trabajo/add/elements/i", methods = ["POST"])
+def add_elements():
+    idPuestoTrabajo = request.form.get("idPuestoTrabajo")
+    idElemento = request.form.get("idElemento")
+    workstation = Usuario("http://127.0.0.1:5000/puestos/trabajo/add/elements")
+    datos = {
+        "idPuestoTrabajo": idPuestoTrabajo,
+        "idElemento": idElemento
+    }
+    workstation.Inserte(datos)
+    id=0
+    msgitos = "Elemento agregado"
+    return render_template("alertas.html", msgito=msgitos)
+
+
 #NEW NOVELTY:
 @app.route("/novedades/i", methods=["POST"])
 def new_novelty():
     idPuestoTrabajo = request.form.get('idPuestoTrabajo')
     idElemento = request.form.get('idElemento')
     descripcion_novedad = request.form.get('descripcion_novedad')
+    print(f"idPuestoTrabajo: {idPuestoTrabajo}")
+    print(f"idElemento: {idElemento}")
+    print(f"descripcion_novedad: {descripcion_novedad}")
+
     nove= Usuario("http://127.0.0.1:5000/novedades")
-    datos = {   
+    datos = {
         "idPuestoTrabajo":idPuestoTrabajo,
         "idElemento": idElemento,
         "descripcion_novedad": descripcion_novedad
     }
+    # Debug print before insertion
+    print("Datos to insert:", datos)
     nove.Inserte(datos)
     id=0
-    msgitos = "Novedad realizada registrada"
+    msgitos = "Novedad registrada"
     return render_template("alertas.html", msgito=msgitos,idPuestoTrabajo=idPuestoTrabajo, idElemento=idElemento)
 
 #REGISTRO DE NOVEDAD
-@app.route("/novedades/registrar/novedad/<id>", methods=["GET"])
-def bb(id):
-    response = requests.get("http://127.0.0.1:5000/pt/" + id) #IdElemento
-    r = requests.get("http://127.0.0.1:5000/puestos/trabajo/" + id) #IdPuestoTrabajo
-    ojo = r.json()
+@app.route("/novedades/registrar/novedad/<workstation_id>/<element_id>", methods=["GET"])
+def registrar_2novedad(workstation_id, element_id):
+    try:
+        workstation_name = request.args.get('nombrePT', 'Unknown Workstation')
+        element_name = request.args.get('nombreElemento', 'Unknown Element')
 
-    if response.status_code == 200:
-        data = response.json()
-        print(f"Element: \n{data}")
-        print(f"Workstation: \n{ojo}")
-        cadena_dict = {item[0]: item[1] for item in data}
-        return render_template("./novedades/novedades.html", N='1', can=len(data), cadena=data, cadena_dict=cadena_dict)
-    else:
+        return render_template(
+            "./novedades/novedades.html",
+            N = '1',
+            workstation_name=workstation_name,
+            element_name=element_name,
+            workstation_id=workstation_id,
+            element_id=element_id
+        )
+    except requests.exceptions.RequestException as e:
+        print(f"Error fetching data from API: {e}")
         return "Error: Failed to retrieve data from the endpoint"
+
+#ADD ELEMENTS TO A WORKSTATION
+@app.route("/ptrabajo/add/elements/<idPuestoTrabajo>", methods = ["GET"])
+def AddElementsToAWorkstation(idPuestoTrabajo):
+    puesto_trabajo = requests.get("http://127.0.0.1:5000/puestos/trabajo/"+idPuestoTrabajo)
+    ele = requests.get("http://127.0.0.1:5000/usua/to")
+    elements = ele.json()
+    pts = puesto_trabajo.json()
+    print(f"PTs: \n {pts}")
+    print (f"Elements to add: \n {elements}")
+    return render_template("./pt/pt.html", N=8, pts=pts, elements=elements)
 
 
 #ACTUALIZA ELEMENTO:
@@ -270,14 +315,51 @@ def EditaAmbiente(id):
     nombre_ambi = ambi.ListarUno(id)
     return render_template("./ambientes/ambientes.html", N=2, puesto_t=puesto_t, nombre_ambi=nombre_ambi)
 
+#ACTUALIZA INSTRUCTOR:
+@app.route("/instructores/u", methods=["POST"])
+def ActualizaInstructor():
+    id = request.form.get('idInstructor')
+    idTipoInstructor = request.form.get('idTipoInstructor')
+    idAmbiente = request.form.get('idAmbiente')
+    cedula = request.form.get('cedula')
+    emailInstructor = request.form.get('emailInstructor')
+    instructor = Usuario("http://127.0.0.1:5000/instructores")
+    datos = {
+        "idInstructor": id,
+        "idTipoInstructor": idTipoInstructor,
+        "idAmbiente": idAmbiente,
+        "cedula": cedula,
+        "emailInstructor": emailInstructor
+    }
+    print (f"Why None value \n: {instructor.Actualiza(datos)}")
+    id=0
+    msgitos = "Instructor editado satisfactoriamente"
+    return render_template("alertas.html", msgito=msgitos)
+
+@app.route("/instructores/e/<id>", methods=["GET"])
+def EditaInstructor(id):
+    instructor = requests.get("http://127.0.0.1:5000/instructor/"+id)
+    ambi = requests.get("http://127.0.0.1:5000/ambientes/to")
+    cadena2 = ambi.json()
+    t_instructor = requests.get("http://127.0.0.1:5000/tipo/instructor")
+    tipo_inst = t_instructor.json()
+    inst = instructor.json()
+    
+    print("Fetched instructor:", inst)  # Debug information
+    if not inst:
+        return "Instructor not found", 404
+
+    return render_template("./instructores/instructores.html", N=2, inst=inst, tipo_inst=tipo_inst, cadena2=cadena2)
+
 #ACTUALIZA PT:
 @app.route("/puesto_trabajo/u", methods = ["POST"])
 def ActualizaPT():
-    id = request.form.get("id")
+    id = request.form.get("idPuestoTrabajo")
     nombrePT = request.form.get("nombrePT")
     workstation = Usuario("http://127.0.0.1:5000/puesto_trabajo")
     datos = {
-        "nombrePT": nombrePT,
+        "idPuestoTrabajo": id,
+        "nombrePT": nombrePT
     }
     workstation.Actualiza(datos)
     id=0
@@ -297,14 +379,23 @@ def EditaPT(id):
 def lulo(id):
     response = requests.get("http://127.0.0.1:5000/pt/" + id)
     r = requests.get("http://127.0.0.1:5000/puestos/trabajo/" + id)
-    ojo = r.json()
-    print (f"This is your workstation: \n {ojo}")
-    
+    workstation = r.json()
+    print(f"This is your workstation: \n {workstation}")
+
     if response.status_code == 200:
-        data = response.json()
-        print (f"ELEMENTS: \n {data}")
-        cadena_dict = {item[0]: item[1] for item in data}
-        return render_template("./pt/pt.html", N=0, can=len(data), cadena=data, cadena_dict=cadena_dict)
+        elements = response.json()
+        print(f"ELEMENTS: \n {elements}")
+        cadena_dict = {item[0]: item[1] for item in elements}
+        workstation_name = workstation[0][1] if workstation else "Unknown Workstation"
+        return render_template(
+            "./pt/pt.html", 
+            N=0, 
+            can=len(elements), 
+            cadena=elements, 
+            cadena_dict=cadena_dict, 
+            workstation_id=id, 
+            workstation_name=workstation_name
+        )
     else:
         return "Error: Failed to retrieve data from the endpoint"
 
@@ -315,6 +406,14 @@ def nivelBorra(id):
     cadena=u1.Borra(id)
     msgitos="Elemento borrado satisfactoriamente"
     return render_template("alertas.html",msgito=msgitos)
+
+#DELETE ALL RECORDS FROM NOVELTUES TABLE
+@app.route("/niveles/d", methods = ["GET"])
+def BorraTodo():
+    hola = Usuario("http://127.0.0.1:5000/usua")
+    cadena = hola.BorraTodo()
+    msgitos = "Novedades eliminadas exitosamente"
+    return render_template("alertas.html", msgito=msgitos)
 
 #DELETE LEARNING CLASSROOMS:
 @app.route("/ambientes/d/<id>", methods = ["GET"])
@@ -395,10 +494,20 @@ def InstructorList():
 @app.route("/novedades/l", methods=["GET"])
 def NoveltyList():
     novedades = requests.get("http://127.0.0.1:5000/novedades")
+    id_puesto_trabajo = requests.get("http://127.0.0.1:5000/puestos/trabajo")
+    id_elemento = requests.get("http://127.0.0.1:5000/usua/to")
     cadena = novedades.json()
+    idPT = id_puesto_trabajo.json()
+    idElemento = id_elemento.json()
+    print ("LIST OF NOVELTIES: \n",cadena)
+    print ("LIST OF WORKSTATIONS: \n",idPT)
+    print ("LIST OF ELEMENTS: \n",idElemento)
     can = len(cadena)
     id=0
-    return render_template("./novedades/novedades.html", N=0, cadena=cadena, can=can)
+    # Assuming you have lists idPT and idElemento
+    idPT_dict = {puesto[0]: puesto[1] for puesto in idPT}
+    idElemento_dict = {elemento[0]: elemento[2] for elemento in idElemento} 
+    return render_template("./novedades/novedades.html", N=0, cadena=cadena, idPT=idPT, idPT_dict=idPT_dict, idElemento=idElemento, idElemento_dict=idElemento_dict, can=can)
 
 #LEARNIGN CLASSROOM LIST:
 @app.route("/ambientes/l", methods=["GET"])

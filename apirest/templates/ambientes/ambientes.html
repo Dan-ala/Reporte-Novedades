@@ -34,13 +34,11 @@
 {% if N == 0 %}
 <!-- EDILISTAR REGISTROS -->
 <center>
-    <div class="sena-card">
         <div class="bilinguismo__informacion-card-header">
             <h3 class="bilinguismo__information-card-title sena-color sena-sombra">
                 <font color=white>Usuarios</font>
             </h3>
         </div>
-        <div class="sena__informacion-card-container">
             <table class="w3-striped w3-padding-large sena-p100">
                 <td width=50%>
                     <center>
@@ -75,37 +73,38 @@
                             </tr>
                         </table>
                         <br>
-                        <input type="submit" value="Grabar" class="w3-green">
+                        <input type="submit" value="Grabar" class="w3-button w3-round w3-green">
                         </form>
                 </td>
-                <td>&nbsp;&nbsp;</td>
+            </table>
+                <br><br><br><br>
                 <td>
-                    <div class="sena-p100">
-                        <table class="table  sena__information-card-text table-striped sena-p100" height=20% width=100%>
+                        <table class="instructores">
+                            <h2>Ambientes de Formación</h2>
+                            <thead>
+                                <tr>
+                                    <th id="j" scope="col">Nombre Ambiente de Formación</th>
+                                    <th id="j" scope="col">Editar</th>
+                                    <th id="j" scope="col">Delete</th>
+                                </tr>
+                            </thead>
+                            <tbody>
                             {% for x in cadena %}
-                            <td style="text-align:left">
-                                <font size=1 color=black><b>{{x[2]}}</font></b>
-                            </td>
+                            <td id="k" data-cell="Nombre Ambiente de Formación">{{x[2]}}</td>
                             <td width="100px">
                                 <button class="btn w3-blue w3-hover-yellow" alt="Editar"
                                     onclick="Ir1('/ambientes/e/{{x[0]}}')" title="Editar"><i
-                                        class="fa fa-pencil"></i></button>
+                                        class="fa fa-pencil"></i></button></td>
+                                        <td width="100px">
                                 <button class="btn w3-red w3-hover-yellow"
                                     onclick='Confirmar("Desea Borrar el registro?","/ambientes/d/{{x[0]}}")'
                                     title="Borrar"><i class="fa fa-trash"></i></button>
                             </td>
                             </tr>
                             {% endfor %}
-
-                            </tr>
+                        </tbody>
                         </table>
-                    </div>
-                    </tr>
-            </table>
-            <br>
-        </div>
-    </div>
-    <button class="w3-blue" onclick="history.back()">Regresar</button>
+    <button class="w3-button w3-round w3-black" onclick="history.back()">Regresar</button>
     {% endif %}
 
 

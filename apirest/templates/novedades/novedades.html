@@ -3,7 +3,6 @@
         document.forms['mio'].action="/novedades/"+cual
         document.forms['mio'].submit();
      
-     
        }function Ir1(cual){
         location.href=cual
        }
@@ -38,39 +37,43 @@
   <table class="w3-table w3-striped w3-border" border="1">   
       <thead>
           <tr>
-              <th scope="col">ID</th>
-              <th scope="col">ID Puesto de Trabajo</th>
-              <th scope="col">ID Elemento</th>
+              <th scope="col">Puesto de Trabajo</th>
+              <th scope="col">Elemento</th>
               <th scope="col">Descripción</th>
-              <th scope="col">Date</th>
+              <th scope="col">Fecha de la novedad</th>
           </tr>
       </thead>
       <tbody>
         {% for x in cadena %}
         <tr>
-            <td>{{ x[0] }}</td>
-            <td>{{ x[1] }}</td>
-            <td>{{ x[2] }}</td>
+            <td>
+                {{ idPT_dict.get(x[1], '') }}
+            </td>
+            <td>
+                {{ idElemento_dict.get(x[2], '') }}
+            </td>
             <td>{{ x[3] }}</td>
             <td>{{ x[4] }}</td>
         </tr>
         {% endfor %}
-    </tbody>    
+    </tbody>   
   </table>
   <br><br>
-  <button class="w3-blue" onclick="history.back()">Regresar</button>
+  <button class="w3-button w3-round w3-red" onclick='Confirmar("Desea Borrar todos los registros?","/niveles/d")'>Borrar Novedades</button>
+  <input type="button" class="w3-button w3-round w3-black" value="Regresar" onclick="history.back()">
   {% endif %}
 
 {% if N == '1' %}
+<div class="createANovelty">
 <div class="w3-responsive">
     <br>
     <table class="w3-striped w3-centered">
         <tr>
-            <td colspan=2 class="w3-green">CREANDO UNA NOVEDAD...</td>
+            <td colspan="2" class="w3-green">CREANDO UNA NOVEDAD...</td>
         </tr>
-        <form name="mio" method="POST" class="w3-bordered" action="/novedades/i"> <!-- Pass idElemento in the form action -->
-            <input type="hidden" name="idPuestoTrabajo" value="{{ idPuestoTrabajo }}"> <!-- Add hidden input field for idPuestoTrabajo -->
-            <input type="hidden" name="idElemento" value="{{ idElemento }}"> <!-- Add hidden input field for idElemento -->
+        <form id="novedadForm" name="mio" method="POST" class="w3-bordered" action="/novedades/i"> <!-- Pass idElemento in the form action -->
+            <input type="hidden" id="idPuestoTrabajo" name="idPuestoTrabajo" value="{{ workstation_id }}">
+            <input type="hidden" id="idElemento" name="idElemento" value="{{ element_id }}  ">
             <tr>
                 <td>Descripción:</td>
                 <td>
@@ -78,14 +81,16 @@
                 </td>
             </tr>
             <tr>
-                <td colspan=2>
-                    <input type="submit" value="Grabar" class="w3-button w3-green w3-half w3-round"> <!-- Change type to submit -->
-                    <input type="button" value="Regresar" onclick="history.back()" class="w3-round w3-button w3-black">
+                <td colspan="2">
+                    <button id="navigateButton" class="w3-button w3-green w3-round">Grabar</button> <!-- Change type to submit -->
+                    <input type="button" class="w3-round w3-button w3-black" value="Regresar" onclick="history.back()">
                 </td>   
             </tr>
         </form>
     </table>
 </div>
+</div>
+<script src="{{ url_for('static', filename='js/insert_novelties.js') }}"></script>
 {% endif %}
 
 

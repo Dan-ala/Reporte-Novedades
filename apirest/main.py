@@ -4,6 +4,9 @@ import json
 from database.cnxSqlite import cnxsqlite  
 from config import configura 
 
+from datetime import datetime
+import pytz
+
 app=Flask(__name__)
 
 #BELONGS?
@@ -24,6 +27,13 @@ def login():
     sql = "SELECT cedula, emailInstructor FROM instructor" 
     con = cnxsqlite()
     todo = con.Consultar("./novedades.db", sql)
+    return json.dumps(todo)
+
+@app.route("/instructor/<id>")
+def instr(id):
+    sql = "SELECT * FROM instructor WHERE idInstructor = "+str(id)
+    con=cnxsqlite()
+    todo=con.Consultar("./novedades.db",sql)
     return json.dumps(todo)
 
 #LISTS:
@@ -72,6 +82,13 @@ def TipoInstructor():
 @app.route("/puestos/trabajo")
 def ListaPuestosTrabajo():
     sql = "SELECT * from puesto_trabajo" 
+    con = cnxsqlite()
+    todo = con.Consultar("./novedades.db", sql)
+    return json.dumps(todo)
+
+@app.route("/puestos/trabajo/add/elements")
+def ss():
+    sql = "SELECT * from puesto_elemento" 
     con = cnxsqlite()
     todo = con.Consultar("./novedades.db", sql)
     return json.dumps(todo)
@@ -139,25 +156,23 @@ def insert_general_novelty():
     todo=con.Ejecutar("./novedades.db",sql)
     return "OK"
 
+def get_local_time():
+    utc_now = datetime.utcnow()
+    local_tz = pytz.timezone('America/Bogota')
+    local_time = utc_now.replace(tzinfo=pytz.utc).astimezone(local_tz)
+    return local_time.strftime('%Y-%m-%d %H:%M:%S')
+
 @app.route("/novedades/i", methods=['POST'])
-def insert_element_novelty():
+def insert_element_novelty():   
     datos = request.get_json()
     idPuestoTrabajo = datos['idPuestoTrabajo']
     idElemento = datos['idElemento']
     descripcion_novedad = datos['descripcion_novedad']
-    sql = "INSERT INTO novedades (idPuestoTrabajo, idElemento, descripcion_novedad) VALUES ('"+str(idPuestoTrabajo)+"','"+str(idElemento)+"','"+str(descripcion_novedad)+"')"
+    date_novedad = get_local_time()
+    sql = "INSERT INTO novedades (idPuestoTrabajo, idElemento, descripcion_novedad, date_novedad) VALUES ('"+idPuestoTrabajo+"','"+idElemento+"','"+descripcion_novedad+"','"+date_novedad+"')"
     con = cnxsqlite()
     todo=con.Ejecutar("./novedades.db",sql)
-    return "OK" 
-
-@app.route("/pt/historial", methods=['GET'])
-def get_novelties_report():
-    sql = "SELECT * FROM novedades"
-    con = cnxsqlite()
-    todo=con.Consultar("./novedades.db",sql)
-    return "GREAT"
-
-
+    return "OK"
 
 
 
@@ -225,6 +240,17 @@ def CrearPuestoTrabajo():
     todo = con.Ejecutar("./novedades.db", sql)
     return "OK"
 
+#ADD ELEMENTS TO A WORKSTATION:
+@app.route("/puestos/trabajo/add/elements/i", methods = ["POST"])
+def AddElementsToAPWS():
+    datos = request.get_json()
+    idPuestoTrabajo = datos['idPuestoTrabajo']
+    idElemento = datos['idElemento']
+    sql = "INSERT INTO puesto_elemento (idPuestoTrabajo, idElemento) VALUES ('"+idPuestoTrabajo+"','"+idElemento+"')"
+    con = cnxsqlite()
+    todo = con.Ejecutar("./novedades.db", sql)
+    return "OK"
+
 #EDITA ELEMENTO:
 @app.route("/usua/u",methods = ['PUT'])
 def EditaElemento(): 
@@ -260,6 +286,24 @@ def EditaAmbiente():
         print("An error occurred:", str(e))
         return "Error: Internal Server Error"
     
+#EDITA INSTRUCTORES:
+@app.route("/instructores/u",methods = ['PUT'])
+def EditaInstructor():
+    datos = request.get_json()
+    id = datos['idInstructor']
+    idTipoInstructor = datos['idTipoInstructor']
+    idAmbiente = datos['idAmbiente']
+    cedula = datos['cedula']
+    emailInstructor = datos['emailInstructor']
+    sql = "UPDATE instructor SET emailInstructor = '"+emailInstructor+"', idTipoInstructor = '"+idTipoInstructor+"', idAmbiente = '"+idAmbiente+"', cedula = '"+cedula+"' WHERE idInstructor = "+str(id)
+    try:
+        con = cnxsqlite()
+        todo = con.Ejecutar("./novedades.db",sql)
+        return "OK"
+    except Exception as e:
+        print("An error occurred:", str(e))
+        return "Error: Internal Server Error"
+    
 #EDITA PUESTO DE TRABAJO:
 @app.route("/puesto_trabajo/u", methods = ['PUT'])
 def EditaPT():
@@ -283,6 +327,14 @@ def BorrarUsuario(id):
     con=cnxsqlite()
     todo=con.Ejecutar("./novedades.db",sql)
     return "OK"
+
+#DELETE WHOLE NOVELTIES
+@app.route("/usua/d", methods = ['DELETE'])
+def borrar_todas_las_novedades():
+    sql = "DELETE FROM novedades"
+    con = cnxsqlite()
+    todo = con.Ejecutar("./novedades.db", sql)
+    return "YOU'VE DELETED ALL THE RECORDS"
 
 #DELETE LEARNING CLASSROOM:
 @app.route("/ambientes/d/<id>", methods = ['DELETE'])
