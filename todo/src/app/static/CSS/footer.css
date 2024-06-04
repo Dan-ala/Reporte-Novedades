@@ -1,0 +1,27 @@
+footer {
+    width: 70%;
+    background-color: #39A900;
+    margin-right: 18%;
+}
+
+/*PHONE*/
+@media (max-width: 700px) {
+    footer {
+        background-color: #39A900;
+        margin-left: 0;
+        margin-right: 0;
+    }
+}
+
+/*DESKTOP*/
+@media (min-width: 700px) {
+    footer {
+        background-color: #39A900;
+        margin-left: 0;
+        margin-right: 0;
+    }
+}
+
+p{
+    align-items: center;
+}

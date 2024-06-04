@@ -1,0 +1,11 @@
+{
+    "sqltools.connections": [
+        {
+            "previewLimit": 50,
+            "driver": "SQLite",
+            "name": "hola",
+            "database": "${workspaceFolder:CPSI}/apirest/novedades.db"
+        }
+    ],
+    "sqltools.useNodeRuntime": true
+}

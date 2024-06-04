@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='CSS/cards.css') }}">
+
+<div class="grid-container">
+  {% for diccionario in menu %}
+  {% for item in diccionario %}
+  <div class="card">
+    <div class="card_image">
+      <a href="{{ item.link }}">
+        <img id="images" class="center" src="{{url_for('static',filename='images/'+item.icons)}}" height="160px"
+          width="173px">
+      </a>
+    </div>
+    <div class="card_content">
+      <h2 class="card_title">{{ item.Title }}</h2>
+    </div>
+  </div>
+  {% endfor %}
+  {% endfor %}
+</div>
+
+{% endblock content %}

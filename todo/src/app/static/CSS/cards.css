@@ -1,0 +1,55 @@
+/* Grid container for the three-column layout */
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px; /* Adjust the gap between the columns as needed */
+  padding: 20px; /* Optional padding around the grid */
+}
+
+/* Card styling */
+.card {
+  display: flex;
+  justify-content: center;
+  margin-top: 5px;
+  flex-direction: column;
+  border-radius: 0.25rem;
+  box-shadow: 0 20px 40px -14px rgba(0, 0, 0, 0.25);
+  height: auto;
+  width: 100%; /* Adjusted to take full width in the grid item */
+}
+
+.card_content {
+  padding: 2.2rem;
+  background: linear-gradient(to bottom left, #1d8807 40%, #117002 100%);
+  width: 100%; /* Adjusted to take full width in the card */
+  height: auto; /* Adjusted to take auto height */
+}
+
+.card_title {
+  color: #ffffff;
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: capitalize;
+  margin: 0px;
+}
+
+/* Media queries for responsiveness */
+@media (min-width: 750px) {
+  .card {
+    display: flex;
+    align-content: center;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 700px) {
+  .card {
+    display: flex;
+    align-content: space-between;
+  }
+
+  .grid-container {
+    grid-template-columns: 1fr; /* Single column layout for smaller screens */
+  }
+}

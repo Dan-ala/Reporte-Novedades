@@ -26,7 +26,6 @@ def createDB():
     );
 
 
-
     CREATE TABLE tipo_elemento (
         idTipoElemento INTEGER PRIMARY KEY,
         tipo TEXT NOT NULL
@@ -45,13 +44,10 @@ def createDB():
     );
 
 
-
     CREATE TABLE puesto_trabajo (
         idPuestoTrabajo INTEGER PRIMARY KEY,
         nombrePT TEXT NOT NULL
     );
-
-
 
 
     CREATE TABLE puesto_elemento (
@@ -63,8 +59,6 @@ def createDB():
     );
 
 
-
-
     CREATE TABLE ambiente (
         idAmbiente INTEGER PRIMARY KEY,
         idPuestoTrabajo INTEGER NOT NULL,
@@ -72,8 +66,6 @@ def createDB():
         FOREIGN KEY(idPuestoTrabajo) REFERENCES puesto_trabajo(idPuestoTrabajo)
     );
 
-
-    
 
     CREATE TABLE novedades (
         idNovedad INTEGER PRIMARY KEY,
@@ -93,7 +85,6 @@ def createDB():
         PRIMARY KEY(idNovedad, idElemento)
     );
 
-    
     
     CREATE TRIGGER delete_element_trigger
     AFTER DELETE ON elemento

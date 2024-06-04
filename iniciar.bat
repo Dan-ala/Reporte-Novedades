@@ -1,7 +1,10 @@
 @echo off
 cd apirest
 start python main.py
-start python routes.py
 cd ..
-cls
-start chrome http://localhost:8000/login
+cd todo
+cd src
+start python bl.py
+cd ..
+cd ..
+start chrome http://localhost:5001/menu

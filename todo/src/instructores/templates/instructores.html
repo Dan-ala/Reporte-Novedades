@@ -1,0 +1,212 @@
+<script>
+    function Ir(cual){
+        document.forms['mio'].action="/instructores/"+cual
+        document.forms['mio'].submit();
+     
+       }function Ir1(cual){
+        location.href=cual
+       }
+
+        function Confirmar(que,donde){
+            Swal.fire({
+        title: "Are you sure?",
+        text: "You won't be able to revert this!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, delete it!"
+}).then((result) => {
+  if (result.isConfirmed) {
+    Swal.fire({
+      title: "Deleted!",
+      text: "Your file has been deleted.",
+      icon: "success"
+    });
+  }
+});
+              location.href=donde
+        }
+       function Va(tipo){
+        
+        if(tipo=="i")
+        document.forms['mio'].action="/instructores/i"
+        if(tipo=="u"){
+         
+         document.forms['mio'].action="/instructores/u"   
+        }
+        
+        document.forms['mio'].submit();    
+     
+       }
+    </script>
+    <center>
+
+{% extends "./base.html" %}
+
+{% block title %}INSTRUCTORES{% endblock %}
+
+{% block content %}
+
+
+  {% if N == 0 %}
+  <!-- EDILISTAR REGISTROS -->
+  <table class="w3-table w3-striped w3-border" border="1">
+    <table class="w3-striped w3-padding-large sena-p100">
+      <td width=50%>
+        <center>
+      <table class="sena__information-card-text w3-striped  w3-centered sena-p100">
+          <tr>
+              <td colspan=2>
+                  <h5 class="sena-sombra w3-green sena-p100 ">CREAR INSTRUCTOR</h5>
+                  </header>
+              </td>
+          </tr>
+          <tr>
+              <form name=mio method=POST action="/instructores/i" class="row g-3 ">
+          <tr>
+              <td>Seleccione Tipo de Instructor:</td>
+              <td>
+                  <select name="idTipoInstructor" id="idTipoInstructor" class="w3-select" required>
+                      {% for x in tipo_inst %}
+                      <option value="{{ x[0] }}">{{ x[1] }}</option>
+                      {% endfor %}
+                  </select>
+                  <br><br>
+              </td>
+          </tr>
+          <tr>
+            <td>Seleccione el ambiente:</td>
+            <td>
+                <select name="idAmbiente" id="idAmbiente" class="w3-select" required>
+                    {% for x in classrooms_not_designated %}
+                    <option value="{{ x[0] }}">{{ x[2] }}</option>
+                    {% endfor %}
+                </select>
+                <br><br>
+            </td>
+            </tr>
+          <td>Cédula:</font>
+          </td>
+          <td><input class="sena-fondo" type="number" id="cedula" name="cedula" required><br></td>
+          </tr>
+          <td>E-mail:</font>
+          </td>
+          <td><input class="sena-fondo" type="text" id="emailInstructor" name="emailInstructor" required><br></td>
+          </tr>
+      </table>
+      <br>
+      <input type="submit" value="Grabar" class="w3-button w3-round w3-green">
+      </form>
+      <br><br><br><br><br>
+</td>
+    </table>
+
+<table class="instructores">
+    <h2>INSTRUCTORES DE LA CALLE 52</h2>
+      <thead>
+          <tr>
+              <th id="j" scope="col">Tipo</th>
+              <th id="j" scope="col">Ambiente a cargo</th>
+              <th id="j" scope="col">CC</th>
+              <th id="j" scope="col">E-mail</th>
+              <th id="j" scope="col">Editar</th>
+              <th id="j" scope="col">Delete</th>
+          </tr>
+      </thead>
+      <tbody>
+        {% for instructor in cadena %}
+        <tr>
+            <td id="k" data-cell="Tipo Instructor">
+                {% for tipo in tipo_inst %}
+                    {% if tipo[0] == instructor[1] %}
+                        {{ tipo[1] }}
+                    {% endif %}
+                {% endfor %}
+            </td>
+            <td id="k" data-cell="Ambiente acargo">
+                {% for ambiente in cadena2 %}
+                    {% if ambiente[0] == instructor[2] %}
+                        {{ ambiente[2] }}
+                    {% endif %}
+                {% endfor %}
+            </td>
+            <td id="k" data-cell="CC">{{ instructor[3] }}</td>
+            <td id="k" data-cell="Email">{{ instructor[4] }}</td>
+            <td id="k" width="100px">
+              <button class="btn w3-blue w3-hover-yellow" alt="Editar"
+                  onclick="Ir1('/instructores/e/{{instructor[0]}}')" title="Editar"><i
+                      class="fa fa-pencil"></i></button></td>
+                      <td id="k" width="100px">
+              <button class="btn w3-red w3-hover-yellow"
+                  onclick='Confirmar("Desea Borrar el registro?","/instructores/d/{{instructor[0]}}")'
+                  title="Borrar"><i class="fa fa-trash"></i></button>
+          </td>
+        </tr>
+        {% endfor %}
+    </tbody>    
+  </table>
+  <br><br>
+  <button class="w3-button w3-round w3-black" onclick="history.back()">Regresar</button>    
+  {% endif %}
+
+  {% if N == 2 %}
+  <table class="w3-striped w3-padding-large sena-p100">
+    <td width=50%>
+  <center>
+    <table class="sena__information-card-text w3-striped  w3-centered sena-p100">
+        <tr>
+            <td colspan=2>
+                <h5 class="sena-sombra w3-green sena-p100 ">EDITANDO INSTRUCTOR</h5>
+                </header>
+            </td>
+        </tr>
+        <tr>
+            <form  name="mio" method="POST" class="row g-3 ">
+                {% for x in inst %}
+        <tr>
+            <td>Seleccione Tipo de Instructor:</td>
+            <td>
+                <select name="idTipoInstructor" id="idTipoInstructor" class="w3-select" required>
+                    {% for x in tipo_inst %}
+                    <option value="{{ x[0] }}">{{ x[1] }}</option>
+                    {% endfor %}
+                </select>
+                <br><br>
+            </td>
+        </tr>
+        <tr>
+          <td>Seleccione el ambiente:</td>
+          <td>
+              <select name="idAmbiente" id="idAmbiente" class="w3-select" required>
+                  {% for x in cadena2 %}
+                  <option value="{{ x[0] }}">{{ x[2] }}</option>
+                  {% endfor %}
+              </select>
+              <br><br>
+          </td>
+      </tr>
+
+        <td>Cédula:</font>
+        </td>
+        <td><input class="sena-fondo" type="number" id="cedula" name="cedula" value="{{ x[3] }}" required><br></td>
+        </tr>
+        <td>E-mail:</font>
+        </td>
+        <td><input class="sena-fondo" type="text" id="emailInstructor" value="{{ x[4] }}" name="emailInstructor" required><br></td>
+        </tr>
+        <td colspan=2><br><input type="button" value="Grabar" onclick="Va('u')"
+            class="w3-button w3-round w3-green">
+        <input type="hidden" name="idInstructor" value="{{ x[0] }}">
+        <input type="button" class="w3-button w3-black w3-round" value="Regresar" onclick="Ir1('/instructores')">
+    </td>
+        {% endfor %}
+    </table>
+    <br>
+
+    </form>
+    <br><br><br><br><br>
+</td>
+  {% endif %}
+
+{% endblock %}
