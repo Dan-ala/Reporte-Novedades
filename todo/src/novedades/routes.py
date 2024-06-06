@@ -23,7 +23,7 @@ def new_novelty():
     idPuestoTrabajo = request.form.get('idPuestoTrabajo')
     idElemento = request.form.get('idElemento')
     descripcion_novedad = request.form.get('descripcion_novedad')
-    
+
     nove = Usuario("http://127.0.0.1:5000/novedades")
     datos = {
         "idPuestoTrabajo": idPuestoTrabajo,
@@ -39,7 +39,7 @@ def new_novelty():
 
     ambi = requests.get("http://127.0.0.1:5000/ambientes/to")
     cadena2 = ambi.json()
-    print (cadena2)
+    print(cadena2)
 
     id_puesto_trabajo = requests.get("http://127.0.0.1:5000/puestos/trabajo")
     id_elemento = requests.get("http://127.0.0.1:5000/usua/to")
@@ -47,34 +47,33 @@ def new_novelty():
     idPT = id_puesto_trabajo.json()
     idElemento = id_elemento.json()
 
-    professor_email = None
+    msgitos = "Novedad registrada pero no se encontró el profesor correspondiente para enviar el correo."
+
     for instructor in cadena:
-        aux=instructor [4]
+        instructor_id = instructor[2]  # Use the correct index for the instructor ID
+        instructor_email = instructor[4]  # Use the correct index for the instructor email
+
         for classroom in cadena2:
-            if classroom[0] == instructor[2]:
-                print(instructor)
-                # professor_email = instructor[4]
-                professor_email = aux
-                print (f"Hola: \n {professor_email}")
+            classroom_id = classroom[0]  # Use the correct index for the classroom ID
 
-                # print("Professor email:", professor_email)
+            if classroom_id == instructor_id:
+                print(f"Matching instructor: {instructor}")
+                print(f"Matching classroom: {classroom}")
 
-                if professor_email:
+                if instructor_email:
                     if request.method == 'POST':
                         try:
-                            msg = Message("NUEVA NOVEDAD", sender="your_email@gmail.com", recipients=[professor_email])
-                            msg.body = f"EN EL AMBIENTE: {classroom[2]} \n DESCRIPCION: \n {descripcion_novedad}"
+                            msg = Message("NUEVA NOVEDAD", sender="danielala14fi@gmail.com", recipients=[instructor_email])
+                            msg.body = f"EN EL AMBIENTE: {classroom[2]} \n DESCRIPCION: \n {descripcion_novedad}"  # Access classroom name by index
                             mail.send(msg)
                             msgitos = "Novedad registrada y correo enviado al profesor correspondiente."
                         except Exception as e:
                             print(f"Error sending email: {e}")
                             msgitos = "Novedad registrada pero hubo un error al enviar el correo."
-                else:
-                    msgitos = "Novedad registrada pero no se encontró el profesor correspondiente para enviar el correo."
-
-                break
-        if professor_email:
-            break
+                        break  # Exit the inner loop once the match is found
+        else:
+            continue  # Only executed if the inner loop did NOT break
+        break  # Exit the outer loop if the inner loop DID break
 
     return render_template("alertas.html", msgito=msgitos, idPuestoTrabajo=idPuestoTrabajo, idElemento=idElemento)
 
