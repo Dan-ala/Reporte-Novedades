@@ -64,7 +64,7 @@ def new_novelty():
                     if request.method == 'POST':
                         try:
                             msg = Message("NUEVA NOVEDAD", sender="danielala14fi@gmail.com", recipients=[instructor_email])
-                            msg.body = f"EN EL AMBIENTE: {classroom[2]} \n DESCRIPCION: \n {descripcion_novedad}"  # Access classroom name by index
+                            msg.body = f"EN EL AMBIENTE: {classroom[2]} \n PUESTO DE TRABAJO: {idPuestoTrabajo[1]} \n DESCRIPCION: \n {descripcion_novedad}"  # Access classroom name by index
                             mail.send(msg)
                             msgitos = "Novedad registrada y correo enviado al profesor correspondiente."
                         except Exception as e:

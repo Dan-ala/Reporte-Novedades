@@ -7,4 +7,4 @@ cd src
 start python bl.py
 cd ..
 cd ..
-start chrome http://localhost:5001/menu
+start chrome http://localhost:8000/menu

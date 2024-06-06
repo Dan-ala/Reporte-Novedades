@@ -29,7 +29,7 @@ def InstructorList():
     cadena = instructors.json()
     cadena2 = ambi.json()
     tipo_inst = t_instructors.json()
-    print (f"Posicion 1: {cadena[0][1]}")
+    # print (f"Posicion 1: {cadena[0][1]}")
     print (f" Instructors: {cadena} \n and Learning Classrooms: {cadena2} \n and type of instructors: {tipo_inst}")
     can = len(cadena)
 
