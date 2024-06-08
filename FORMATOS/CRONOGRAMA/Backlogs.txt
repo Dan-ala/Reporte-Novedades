@@ -1,0 +1,3 @@
+El cronograma se realizó en AzureDevOp.
+Backlogs: https://dev.azure.com/proyecto-personalizacion01/PROYECTO%20-%20NOVEDADES%20EN%20LOS%20AMBIENTES%20DE%20FORMACION/_backlogs/backlog/PROYECTO%20-%20NOVEDADES%20EN%20LOS%20AMBIENTES%20DE%20FORMACION%20Team/Epics
+Cronograma: https://dev.azure.com/proyecto-personalizacion01/PROYECTO%20-%20NOVEDADES%20EN%20LOS%20AMBIENTES%20DE%20FORMACION/_wiki/wikis/PROYECTO---NOVEDADES-EN-LOS-AMBIENTES-DE-FORMACION.wiki/20/Cronograma-Entrega-de-Releases-Flask

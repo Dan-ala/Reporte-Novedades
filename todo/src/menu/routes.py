@@ -1,7 +1,4 @@
-from flask import Flask, jsonify, redirect,request,session,flash, url_for
 from flask import render_template
-import requests
-from services.apicnx import Usuario
 
 from flask import Blueprint
 
@@ -26,12 +23,12 @@ def Lista():
             "link":"/instructores"
         },
         {
-            "Title":"Puestos",
+            "Title":"Puestos de Trabajo",
             "icons": "pt.png",
             "link": "/puesto_trabajo"
         },
         {
-            "Title": "Novelties",
+            "Title": "Novedades",
             "icons": "novelties.png",
             "link": "/novedades"
         },
