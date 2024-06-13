@@ -4,35 +4,7 @@ import requests
   
 app=Flask(__name__)
 
-#LOGIN
-@app.route("/login", methods=["GET", "POST"])
-def login():
-    error = None
-    if request.method == 'POST':
-        r = requests.get("http://127.0.0.1:5000/instructores")
-        cedula = int(request.form.get("cedula"))
-        emailInstructor = request.form.get("emailInstructor")
-        rs = r.json()
-        print (rs)
 
-        found = False
-        for x in rs:
-            
-            if cedula == x[3] and emailInstructor == x[4] and x[1] == 1:
-                session["cedula"] = cedula
-                session["emailInstructor"] = emailInstructor
-                found = True
-                break
-            elif cedula == x[3] and emailInstructor == x[4] and x[1] == 2:
-                flash(f"El instructor con cc: {x[3]} NO es un cuentadante.")
-                return redirect(url_for('login'))
-        if found:
-            return redirect("/menu")
-        else:
-            flash("Cédula o E-mail incorrectos")
-            return redirect(url_for('login'))
-        
-    return render_template("login.html", error=error)
 
 
 

@@ -36,14 +36,19 @@ def new_novelty():
     # Fetching data from APIs
     instructors = requests.get("http://127.0.0.1:5000/instructores")
     cadena = instructors.json()
-    print(cadena)
+    print("Instructors:", cadena)
 
     ambi = requests.get("http://127.0.0.1:5000/ambientes/to")
     cadena2 = ambi.json()
-    print(cadena2)
+    print("Classrooms:", cadena2)
 
     puesto_t = requests.get("http://127.0.0.1:5000/puestos/trabajo")
     pt = puesto_t.json()
+    print("Workstations:", pt)
+
+    elementos = requests.get("http://127.0.0.1:5000/usua/to")
+    element = elementos.json()
+    print("Elements:", element)
 
     # Get nombrePT for the given idPuestoTrabajo
     nombrePT = None
@@ -51,60 +56,49 @@ def new_novelty():
         if puesto[0] == int(idPuestoTrabajo):
             nombrePT = puesto[1]
             break
+    print("Nombre PT:", nombrePT)
 
-    elementos = requests.get("http://127.0.0.1:5000/usua/to")
-    element = elementos.json()
-
-    #GET nombreElemento for the given idElemento
+    # Get nombreElemento for the given idElemento
     nombreElemento = None
     for e in element:
         if e[0] == int(idElemento):
             nombreElemento = e[2]
             break
+    print("Nombre Elemento:", nombreElemento)
 
     msgitos = "Novedad registrada pero no se encontró el profesor correspondiente para enviar el correo."
 
-    # Check if 'cadena' and 'cadena2' have the expected structure
-    if not isinstance(cadena, list) or not isinstance(cadena2, list):
-        return render_template("alertas.html", msgito="Error al obtener datos de instructores o ambientes.")
+    # Find the correct classroom name
+    classroom_name = None
+    for classroom in cadena2:
+        if classroom[0] == int(idPuestoTrabajo):
+            classroom_name = classroom[1]
+            break
+    print("Classroom Name:", classroom_name)
 
-    # Iterate through instructors and classrooms
+    # Find the correct instructor email
+    instructor_email = None
     for instructor in cadena:
+        if instructor[2] == int(idPuestoTrabajo):
+            instructor_email = instructor[4]
+            break
+    print("Instructor Email:", instructor_email)
+
+    if instructor_email:
         try:
-            instructor_id = instructor[2]  # Ensure the correct index
-            instructor_email = instructor[4]  # Ensure the correct index
-        except IndexError:
-            continue
-
-        for classroom in cadena2:
-            try:
-                classroom_id = classroom[0]  # Ensure the correct index
-                classroom_name = classroom[1]  # Ensure the correct index
-            except IndexError:
-                continue
-
-            if classroom_id == instructor_id:
-                print(f"Matching instructor: {instructor}")
-                print(f"Matching classroom: {classroom}")
-
-                if instructor_email:
-                    if request.method == 'POST':
-                        try:
-                            msg = Message(
-                                "NUEVA NOVEDAD",
-                                sender="danielala2006@outlook.es",
-                                recipients=[instructor_email]
-                            )
-                            msg.body = f"EN EL AMBIENTE: {classroom_name} \n PUESTO DE TRABAJO: {nombrePT} \n ELEMENTO: {nombreElemento} \n DESCRIPCION: \n {descripcion_novedad}"
-                            mail.send(msg)
-                            msgitos = "Novedad registrada y correo enviado al profesor correspondiente."
-                        except Exception as e:
-                            print(f"Error sending email: {e}")
-                            msgitos = "Novedad registrada pero hubo un error al enviar el correo."
-                        break  # Exit the inner loop once the match is found
-        else:
-            continue  # Only executed if the inner loop did NOT break
-        break  # Exit the outer loop if the inner loop DID break
+            msg = Message(
+                "NUEVA NOVEDAD",
+                sender="danielala2006@outlook.es",
+                recipients=[instructor_email]
+            )
+            msg.body = f"EN EL AMBIENTE: {classroom_name} \n PUESTO DE TRABAJO: {nombrePT} \n ELEMENTO: {nombreElemento} \n DESCRIPCION: \n {descripcion_novedad}"
+            mail.send(msg)
+            msgitos = "Novedad registrada y correo enviado al profesor correspondiente."
+        except Exception as e:
+            print(f"Error sending email: {e}")
+            msgitos = "Novedad registrada pero hubo un error al enviar el correo."
+    else:
+        print("No matching instructor found for the given classroom.")
 
     return render_template("alertas.html", msgito=msgitos, idPuestoTrabajo=idPuestoTrabajo, idElemento=idElemento)
 
