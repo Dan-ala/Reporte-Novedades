@@ -144,3 +144,15 @@ def ambientesBorra(id):
     cadena = ambi.Borra(id)
     msgitos = "Ambiente borrado satisfactoriamente"
     return render_template("alertas.html", msgito=msgitos)
+
+
+
+
+
+#LEARNING CLASSROOMS - LIST (accountant)
+@ambientes.route("cuentadante/<idInstructor>", methods = ["GET"])
+def ambientesCuentadante(idInstructor):
+    instructors_by_idAmbiente = requests.get(f"http://127.0.0.1:5000/instructor/{idInstructor}")
+    clss_by_an_instructor = instructors_by_idAmbiente.json()
+    print (f"Learning classrooms that belong to an accountant: \n {clss_by_an_instructor}")
+    return render_template("lista_ambientes_cuentadante.html", clss_by_an_instructor=clss_by_an_instructor)
