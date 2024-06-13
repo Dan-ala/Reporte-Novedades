@@ -80,7 +80,7 @@
             <td>
                 <select name="idAmbiente" id="idAmbiente" class="w3-select" required>
                     {% for x in classrooms_not_designated %}
-                    <option value="{{ x[0] }}">{{ x[2] }}</option>
+                    <option value="{{ x[0] }}">{{ x[1] }}</option>
                     {% endfor %}
                 </select>
                 <br><br>
@@ -127,7 +127,7 @@
             <td id="k" data-cell="Ambiente acargo">
                 {% for ambiente in cadena2 %}
                     {% if ambiente[0] == instructor[2] %}
-                        {{ ambiente[2] }}
+                        {{ ambiente[1] }}
                     {% endif %}
                 {% endfor %}
             </td>
@@ -147,7 +147,7 @@
     </tbody>    
   </table>
   <br><br>
-  <button class="w3-button w3-round w3-black" onclick="history.back()">Regresar</button>    
+  <button class="w3-button w3-round w3-black" onclick="Ir1('/menu')">Regresar</button>    
   {% endif %}
 
   {% if N == 2 %}
@@ -180,7 +180,7 @@
           <td>
               <select name="idAmbiente" id="idAmbiente" class="w3-select" required>
                   {% for x in cadena2 %}
-                  <option value="{{ x[0] }}">{{ x[2] }}</option>
+                  <option value="{{ x[0] }}">{{ x[1] }}</option>
                   {% endfor %}
               </select>
               <br><br>

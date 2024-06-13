@@ -228,12 +228,15 @@ function Ir1(url, workstationName, elementName) {
                 <form name="mio" method="POST" action="/puesto_trabajo/puestos/trabajo/add/elements/i" class="row g-3">
                     <input type="hidden" id="idPuestoTrabajo" name="idPuestoTrabajo" value="">
                     <tr>
+                        <td>Seleccione Elemento:</td>
                         <td>
-                            <select name="idElemento" id="idElemento" multiple  multiselect-search="true" multiselect-select-all="true" multiselect-max-items="5">
-                                {% if elements not in pts %}
-                                {% for x in elements %}
-                                <option value="{{ x[0] }}">{{ x[2] }}</option>
-                                {% endfor %}
+                            <select name="idElemento" id="idElemento" multiple multiselect-search="true" multiselect-select-all="true" multiselect-max-items="5">
+                                {% if elements %}
+                                    {% for element in elements %}
+                                        <option value="{{ element[0] }}">{{ element[2] }}</option>
+                                    {% endfor %}
+                                {% else %}
+                                      <option value="" disabled>{{ msg }}</option>
                                 {% endif %}
                             </select>
                         </td>

@@ -60,7 +60,7 @@ style.innerHTML = `
   overflow-x: hidden;
 }
 .multiselect-dropdown-list::-webkit-scrollbar {
-  width: 6px;
+  width: 10px;
 }
 .multiselect-dropdown-list::-webkit-scrollbar-thumb {
   background-color: #bec4ca;
@@ -72,7 +72,7 @@ style.innerHTML = `
 }
 .multiselect-dropdown-list input{
   height: 1.15em;
-  width: 1.15em;
+  width: 2em;
   margin-right: 0.35em;  
 }
 .multiselect-dropdown-list div.checked{
@@ -89,11 +89,11 @@ function MultiselectDropdown(options){
   var config={
     search:true,
     height:'15rem',
-    placeholder:'select',
+    placeholder:'Selecciona',
     txtSelected:'selected',
-    txtAll:'All',
+    txtAll:'Todos',
     txtRemove: 'Remove',
-    txtSearch:'search',
+    txtSearch:'Buscar...',
     ...options
   };
   function newEl(tag,attrs){

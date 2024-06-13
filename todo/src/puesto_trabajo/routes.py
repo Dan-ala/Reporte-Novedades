@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, redirect,request,session,flash, url_for
+from flask import Flask, jsonify, redirect,request
 from flask import render_template
 import requests
 from services.apicnx import Usuario
@@ -61,13 +61,29 @@ def add_elements():
 #ADD ELEMENTS TO A WORKSTATION
 @puesto_trabajo.route("ptrabajo/add/elements/<idPuestoTrabajo>", methods = ["GET"])
 def AddElementsToAWorkstation(idPuestoTrabajo):
-    puesto_trabajo = requests.get("http://127.0.0.1:5000/puestos/trabajo/"+idPuestoTrabajo)
-    ele = requests.get("http://127.0.0.1:5000/usua/to")
-    elements = ele.json()
-    pts = puesto_trabajo.json()
-    print(f"PTs: \n {pts}")
-    print (f"Elements to add: \n {elements}")
-    return render_template("pt.html", N=8, pts=pts, elements=elements)
+    # Fetch elements assigned to the specific workstation
+    response_puesto_trabajo = requests.get(f"http://127.0.0.1:5000/pt/{idPuestoTrabajo}")
+    if response_puesto_trabajo.status_code != 200:
+        return f"Error fetching workstation data: {response_puesto_trabajo.text}", 500
+    
+    current_workstation_elements = response_puesto_trabajo.json()
+
+    # Extract IDs of elements assigned to the current workstation
+    current_workstation_element_ids = {element[0] for element in current_workstation_elements}
+
+    # Fetch all elements
+    response_elements = requests.get("http://127.0.0.1:5000/usua/to")
+    if response_elements.status_code != 200:
+        return f"Error fetching elements data: {response_elements.text}", 500
+    
+    all_elements = response_elements.json()
+
+    # Filter out elements that are already assigned to the current workstation
+    elements_not_in_workstation = [element for element in all_elements if element[0] not in current_workstation_element_ids]
+    
+    msg = "No hay elementos para asignar." if not elements_not_in_workstation else "Seleccione los elementos para asignar."
+
+    return render_template("pt.html", N=8, pts=current_workstation_elements, elements=elements_not_in_workstation, msg=msg)
 
 
 #ACTUALIZA PT:

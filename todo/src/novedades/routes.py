@@ -18,10 +18,10 @@ novedades = Blueprint('novedades', __name__, url_prefix='/novedades',
 
 
 #NEW NOVELTY:
-@novedades.route("i", methods=["GET","POST"])
+@novedades.route("i", methods=["GET", "POST"])
 def new_novelty():
-    idPuestoTrabajo = request.form.get('idPuestoTrabajo')
-    idElemento = request.form.get('idElemento')
+    idPuestoTrabajo = str(request.form.get('idPuestoTrabajo'))
+    idElemento = str(request.form.get('idElemento'))
     descripcion_novedad = request.form.get('descripcion_novedad')
 
     nove = Usuario("http://127.0.0.1:5000/novedades")
@@ -33,6 +33,7 @@ def new_novelty():
     print("Datos to insert:", datos)
     nove.Inserte(datos)
 
+    # Fetching data from APIs
     instructors = requests.get("http://127.0.0.1:5000/instructores")
     cadena = instructors.json()
     print(cadena)
@@ -41,20 +42,46 @@ def new_novelty():
     cadena2 = ambi.json()
     print(cadena2)
 
-    id_puesto_trabajo = requests.get("http://127.0.0.1:5000/puestos/trabajo")
-    id_elemento = requests.get("http://127.0.0.1:5000/usua/to")
+    puesto_t = requests.get("http://127.0.0.1:5000/puestos/trabajo")
+    pt = puesto_t.json()
 
-    idPT = id_puesto_trabajo.json()
-    idElemento = id_elemento.json()
+    # Get nombrePT for the given idPuestoTrabajo
+    nombrePT = None
+    for puesto in pt:
+        if puesto[0] == int(idPuestoTrabajo):
+            nombrePT = puesto[1]
+            break
+
+    elementos = requests.get("http://127.0.0.1:5000/usua/to")
+    element = elementos.json()
+
+    #GET nombreElemento for the given idElemento
+    nombreElemento = None
+    for e in element:
+        if e[0] == int(idElemento):
+            nombreElemento = e[2]
+            break
 
     msgitos = "Novedad registrada pero no se encontró el profesor correspondiente para enviar el correo."
 
+    # Check if 'cadena' and 'cadena2' have the expected structure
+    if not isinstance(cadena, list) or not isinstance(cadena2, list):
+        return render_template("alertas.html", msgito="Error al obtener datos de instructores o ambientes.")
+
+    # Iterate through instructors and classrooms
     for instructor in cadena:
-        instructor_id = instructor[2]  # Use the correct index for the instructor ID
-        instructor_email = instructor[4]  # Use the correct index for the instructor email
+        try:
+            instructor_id = instructor[2]  # Ensure the correct index
+            instructor_email = instructor[4]  # Ensure the correct index
+        except IndexError:
+            continue
 
         for classroom in cadena2:
-            classroom_id = classroom[0]  # Use the correct index for the classroom ID
+            try:
+                classroom_id = classroom[0]  # Ensure the correct index
+                classroom_name = classroom[1]  # Ensure the correct index
+            except IndexError:
+                continue
 
             if classroom_id == instructor_id:
                 print(f"Matching instructor: {instructor}")
@@ -63,8 +90,12 @@ def new_novelty():
                 if instructor_email:
                     if request.method == 'POST':
                         try:
-                            msg = Message("NUEVA NOVEDAD", sender="danielala14fi@gmail.com", recipients=[instructor_email])
-                            msg.body = f"EN EL AMBIENTE: {classroom[2]} \n PUESTO DE TRABAJO: {idPuestoTrabajo[1]} \n DESCRIPCION: \n {descripcion_novedad}"  # Access classroom name by index
+                            msg = Message(
+                                "NUEVA NOVEDAD",
+                                sender="danielala2006@outlook.es",
+                                recipients=[instructor_email]
+                            )
+                            msg.body = f"EN EL AMBIENTE: {classroom_name} \n PUESTO DE TRABAJO: {nombrePT} \n ELEMENTO: {nombreElemento} \n DESCRIPCION: \n {descripcion_novedad}"
                             mail.send(msg)
                             msgitos = "Novedad registrada y correo enviado al profesor correspondiente."
                         except Exception as e:

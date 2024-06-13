@@ -18,9 +18,12 @@ def index5():
 def learning_classroom(id=0):
     return render_template("ambientes.html", N=id)
 
-@ambientes.route("test", methods = ["GET"])
+#LEARNING CLASSROOM STATUS
+@ambientes.route("estado", methods = ["GET"])
 def test():
-    return "This is a test"
+    ambientes = requests.get("http://127.0.0.1:5000/ambientes/add/pts")
+    ambiente_puesto = ambientes.json()
+    return render_template("estado_ambientes.html", ambiente_puesto=ambiente_puesto)
 
 
 #LEARNIGN CLASSROOM LIST:
@@ -31,6 +34,10 @@ def AmbienteList():
     aa = a.json()
     pue_tra = requests.get("http://127.0.0.1:5000/puestos/trabajo")
     puesto_t = pue_tra.json()
+
+    puesto_elemento = requests.get("http://127.0.0.1:5000/puestos/trabajo/add/elements")
+    pp = puesto_elemento.json()
+
     cadena = list (ambientes.ListarTodos())
     print (f"These are the desktops: \n{puesto_t}")
     classroom_workstations = [classroom[1] for classroom in aa]
@@ -53,17 +60,47 @@ def AmbienteList():
 #NEW LEARNING CLASSROOM
 @ambientes.route("i", methods=["POST"])
 def LearningClassroomInsert():
-    idPuestoTrabajo = request.form.get('idPuestoTrabajo')
     nombreAmbiente = request.form.get ('nombreAmbiente')
     ambi = Usuario("http://127.0.0.1:5000/ambientes")
     datos = {
-        "idPuestoTrabajo": idPuestoTrabajo,
         "nombreAmbiente": nombreAmbiente
     }
     ambi.Inserte(datos)
     id=0
     msgitos = "Ambiente de formación creado"
     return render_template("alertas.html", msgito=msgitos)
+
+
+#ADD WORKSTATIONS TO A LEARNING CLASSROOM:
+@ambientes.route("add/pts/i", methods = ["POST"])
+def add_wks():
+    idAmbiente = request.form.get('idAmbiente')
+    idPuestoTrabajo = request.form.get('idPuestoTrabajo')
+    ambi = Usuario("http://127.0.0.1:5000/ambientes/add/pts")
+    datos = {
+        "idAmbiente": idAmbiente,
+        "idPuestoTrabajo": idPuestoTrabajo
+    }
+    ambi.Inserte(datos)
+    id=0
+    msgitos = "Puesto de trabajo asignado"
+    return render_template("alertas.html", msgito=msgitos)
+
+
+#ADD WKS TO A LEARNING CLASSROOM:
+@ambientes.route("add/pts/<idAmbiente>", methods=["GET"])
+def AddElementsToAWorkstation(idAmbiente):
+    response = requests.get("http://127.0.0.1:5000/puestos/trabajo")
+    puestos_t = response.json()
+
+    ambi = requests.get(f"http://127.0.0.1:5000/ambientes/{idAmbiente}")
+    learning_classrooms = ambi.json()
+    print (f"Current leaning classroom: {learning_classrooms}")
+
+
+    return render_template("ambientes.html", N=8, puestos_t=puestos_t,learning_classrooms=learning_classrooms)
+
+
 
 
 #REGISTRO DE AMBIENTE DE FORMACION:
@@ -78,12 +115,12 @@ def ambiente_record():
 @ambientes.route("u", methods=["POST"])
 def ActualizaAmbiente():
     id = request.form.get('id')
-    idPuestoTrabajo=request.form.get('idPuestoTrabajo')
+    idPuestoElemento=request.form.get('idPuestoElemento')
     nombreAmbiente=request.form.get('nombreAmbiente')
     ambi= Usuario("http://127.0.0.1:5000/ambientes")
     datos = {   
         "idAmbiente":id,
-        "idPuestoTrabajo": idPuestoTrabajo,
+        "idPuestoElemento": idPuestoElemento,
         "nombreAmbiente": nombreAmbiente,
     }   
     ambi.Actualiza(datos)

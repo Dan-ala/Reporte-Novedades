@@ -61,9 +61,14 @@ def createDB():
 
     CREATE TABLE ambiente (
         idAmbiente INTEGER PRIMARY KEY,
-        idPuestoTrabajo INTEGER NOT NULL,
-        nombreAmbiente TEXT NOT NULL,
-        FOREIGN KEY(idPuestoTrabajo) REFERENCES puesto_trabajo(idPuestoTrabajo)
+        nombreAmbiente TEXT NOT NULL
+    );
+
+    CREATE TABLE ambiente_puesto (
+    idAmbiente INTEGER,
+    idPuestoTrabajo INTEGER,
+    FOREIGN KEY(idAmbiente) REFERENCES ambiente(idAmbiente),
+    FOREIGN KEY(idPuestoTrabajo) REFERENCES puesto_trabajo(idPuestoTrabajo)
     );
 
 

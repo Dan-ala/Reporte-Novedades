@@ -20,7 +20,14 @@
         }
 
         document.forms['mio'].submit();
+    }
 
+    function Re(tipo){
+        if (tipo == "ii") {
+            document.forms['mio'].action = "/ambientes/add/pts/i"
+        }
+        const form = document.forms['mio'];
+        document.forms['mio'].submit();
     }
 </script>
 
@@ -34,117 +41,70 @@
 {% if N == 0 %}
 <!-- EDILISTAR REGISTROS -->
 <center>
-        <div class="bilinguismo__informacion-card-header">
-            <h3 class="bilinguismo__information-card-title sena-color sena-sombra">
-                <font color=white>Usuarios</font>
-            </h3>
-        </div>
-            <table class="w3-striped w3-padding-large sena-p100">
-                <td width=50%>
-                    <center>
-                        <table class="sena__information-card-text w3-striped  w3-centered sena-p100">
-                            <tr>
-                                <td colspan=2>
-                                    <h5 class="sena-sombra w3-green sena-p100 ">CREAR AMBIENTE</h5>
-                                    </header>
-                                </td>
-                            </tr>
-                            <tr>
-                                <form name=mio method=POST action="/ambientes/i" class="row g-3 ">
-                            <tr>
-                                <td>Seleccione Puesto de Trabajo:</td>
-                                <td>
-                                    <select name="idPuestoTrabajo" id="idPuestoTrabajo" class="w3-select" required>
-                                        {% if workstations_not_in_classroom %}
-                                        <option value="" disabled>{{ msg }}</option>
-                                        {% else %}
-                                        {% for x in puesto_t %}
-                                        <option value="{{ x[0] }}">{{ x[1] }}</option>
-                                        {% endfor %}
-                                        {% endif %}
-                                    </select>
-                                    <br><br>
-                                </td>
-                            </tr>
+    <div class="bilinguismo__informacion-card-header">
+        <h3 class="bilinguismo__information-card-title sena-color sena-sombra">
+            <font color=white>Usuarios</font>
+        </h3>
+    </div>
+    <table class="w3-striped w3-padding-large sena-p100">
+        <td width=50%>
+            <center>
+                <table class="sena__information-card-text w3-striped  w3-centered sena-p100">
+                    <tr>
+                        <td colspan=2>
+                            <h5 class="sena-sombra w3-green sena-p100 ">CREAR AMBIENTE</h5>
+                            </header>
+                        </td>
+                    </tr>
+                    <tr>
+                        <form name=mio method=POST action="/ambientes/i" class="row g-3 ">
                             <td>Nombre del Ambiente de Formación:</font>
                             </td>
                             <td><input class="sena-fondo" type="text" id="nombreAmbiente" name="nombreAmbiente"
                                     required><br></td>
-                            </tr>
-                        </table>
-                        <br>
-                        <input type="submit" value="Grabar" class="w3-button w3-round w3-green">
-                        </form>
+                    </tr>
+                </table>
+                <br>
+                <input type="submit" value="Grabar" class="w3-button w3-round w3-green">
+                </form>
+        </td>
+    </table>
+    <br><br><br><br>
+    <td>
+        <table class="instructores">
+            <h2>Ambientes de Formación</h2>
+            <thead>
+                <tr>
+                    <th id="j" scope="col">Nombre Ambiente de Formación</th>
+                    <th id="j" scope="col">Editar</th>
+                    <th id="j" scope="col">Delete</th>
+                    <th id="j" scope="col">Assign</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for x in cadena %}
+                <td id="k" data-cell="Nombre Ambiente de Formación">{{x[1]}}</td>
+                <td width="100px">
+                    <button class="btn w3-blue w3-hover-yellow" alt="Editar" onclick="Ir1('/ambientes/e/{{x[0]}}')"
+                        title="Editar"><i class="fa fa-pencil"></i></button>
                 </td>
-            </table>
-                <br><br><br><br>
-                <td>
-                        <table class="instructores">
-                            <h2>Ambientes de Formación</h2>
-                            <thead>
-                                <tr>
-                                    <th id="j" scope="col">Nombre Ambiente de Formación</th>
-                                    <th id="j" scope="col">Editar</th>
-                                    <th id="j" scope="col">Delete</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                            {% for x in cadena %}
-                            <td id="k" data-cell="Nombre Ambiente de Formación">{{x[2]}}</td>
-                            <td width="100px">
-                                <button class="btn w3-blue w3-hover-yellow" alt="Editar"
-                                    onclick="Ir1('/ambientes/e/{{x[0]}}')" title="Editar"><i
-                                        class="fa fa-pencil"></i></button></td>
-                                        <td width="100px">
-                                <button class="btn w3-red w3-hover-yellow"
-                                    onclick='Confirmar("Desea Borrar el registro?","/ambientes/d/{{x[0]}}")'
-                                    title="Borrar"><i class="fa fa-trash"></i></button>
-                            </td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                        </table>
-    <button class="w3-button w3-round w3-black" onclick="history.back()">Regresar</button>
-    {% endif %}
-
-
-    <!--CREAR UN REGISTRO-->
-    {% if N == '1' %}
-    <div class="w3-responsive">
-        <br>
-        <table class="w3-striped w3-centered">
-            <tr>
-                <td colspan=2 class="w3-green">CREANDO REGISTRO AMBIENTE...</td>
-            </tr>
-            <form name="mio" method="POST" class="w3-bordered"></form>
-            <tr>
-                <td>Seleccione Puesto de Trabajo:</td>
-                <td>
-                    <select name="idPuestoTrabajo" id="idPuestoTrabajo" class="w3-select" required>
-                        {% for x in puestos_t %}
-                        <option value="{{ x[0] }}">{{ x[1] }}</option>
-                        {% endfor %}
-                    </select>
-                    <br><br>
+                <td width="100px">
+                    <button class="btn w3-red w3-hover-yellow"
+                        onclick='Confirmar("Desea Borrar el registro?","/ambientes/d/{{x[0]}}")' title="Borrar"><i
+                            class="fa fa-trash"></i></button>
                 </td>
-            </tr>
-            <tr>
-                <td>Nombre del ambiente:</td>
-                <td>
-                    <input class="w3-input w3-border w3-hover-yellow" type="text" name="nombreAmbiente" required
-                        maxlength="45">
+                <td width="100px">
+                    <button class="btn w3-green w3-hover-yellow"
+                        onclick="Ir1('/ambientes/add/pts/{{x[0]}}')" title="Asignar">
+                        <i class="fa fa-plus"></i></button>
                 </td>
-            </tr>
-            <tr>
-                <td colspan=2>
-                    <input type="button" value="Grabar" onclick="Va('i')" class="w3-button w3-green w3-half w3-round">
-                    <input type="button" value="Regresar" onclick="Ir1('/ambientes/l')"
-                        class="w3-round w3-button w3-black">
-                </td>
-            </tr>
-        </table>
-        </form>
-    </div>
+    </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+    </table>
+    <br>
+    <button class="w3-button w3-round w3-black" onclick="Ir1('/menu')">Regresar</button>
     {% endif %}
 
 
@@ -158,23 +118,9 @@
                 <tr>
                     <td colspan=2 class="w3-green">EDITANDO... AMBIENTE</td>
                 </tr>
-                <td>Seleccione Puesto de Trabajo:</td>
-                <td>
-                    <select name="idPuestoTrabajo" id="idPuestoTrabajo" class="w3-select" required>
-                        {% if nombre_ambi is not in puesto_t %}
-                        {% for x in puesto_t %}
-                        <option value="{{ x[0] }}">{{ x[1] }}</option>
-                        {% endfor %}
-                        {% else %}
-                        <p>NO HAY PT DISPONIBLES</p>
-                        {% endif %}
-                    </select>
-                    <br><br><br><br>
-                </td>
-                </tr>
                 <td>Nombre Ambiente:</td>
                 {% for i in nombre_ambi %}
-                <td><input type=text name=nombreAmbiente id=nombreAmbiente value="{{ i[2] }}" required></td>
+                <td><input type=text name=nombreAmbiente id=nombreAmbiente value="{{ i[1] }}" required></td>
                 </tr>
                 <td colspan=2><br><input type="button" value="Grabar" onclick="Va('u')"
                         class="w3-button w3-round w3-green">
@@ -189,4 +135,45 @@
         </div>
         {%endif%}
 
-            {% endblock %}
+    {% if N==8 %}
+        <br>
+        <div class="addWorkstationsToALearningClassroom">
+            <table class="sena__information-card-text w3-centered">
+                <tr>
+                    <td colspan=2>
+                        <h5 class="sena-sombra w3-green sena-+p100">ASIGNAR PTs</h5>
+                    </td>
+                </tr>
+                <tr>
+                    <form name="mio" method="POST" action="/ambientes/add/pts/i"
+                        class="row g-3">
+                        <input type="hidden" id="idAmbiente" name="idAmbiente" value="">
+                <tr>
+                    <td>Seleccione Puesto de Trabajo:</td>
+                    <td>
+                        <select name="idPuestoTrabajo" id="idPuestoTrabajo" style="width: 120px;" multiple multiselect-search="true"
+                            multiselect-select-all="true" multiselect-max-items="5">
+                            {% for pt in puestos_t %}
+                            <option value="{{ pt[0] }}">{{ pt[1] }}</option>
+                            {% endfor %}
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <br><br>
+                        <input type="submit" value="Grabar" class="w3-button w3-round w3-green">
+                        <input type="button" class="w3-button w3-round w3-black" value="Regresar"
+                            onclick="history.back()">
+                    </td>
+                </tr>
+                </form>
+                </tr>
+            </table>
+            <br><br><br><br><br>
+        </div>
+        <script src="{{ url_for('static', filename='js/ambiente_puesto.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/multi-select.js') }}"></script>
+    {% endif %}
+
+{% endblock %}

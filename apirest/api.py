@@ -88,9 +88,28 @@ def ListaPuestosTrabajo():
 
 @app.route("/puestos/trabajo/add/elements")
 def ss():
-    sql = "SELECT * from puesto_elemento" 
+    sql = "SELECT * from puesto_elemento"
     con = cnxsqlite()
     todo = con.Consultar("./novedades.db", sql)
+    return json.dumps(todo)
+
+@app.route("/ambientes/add/pts")
+def qrs():
+    sql = """
+    SELECT ap.idAmbiente, a.nombreAmbiente, ap.idPuestoTrabajo, pt.nombrePT
+    FROM ambiente_puesto ap
+    JOIN ambiente a ON ap.idAmbiente = a.idAmbiente
+    JOIN puesto_trabajo pt ON ap.idPuestoTrabajo = pt.idPuestoTrabajo
+    """
+    con = cnxsqlite()
+    todo = con.Consultar("./novedades.db", sql)
+    return json.dumps(todo)   
+
+@app.route("/ambientes/pts")
+def ambi_pts():
+    sql = "SELECT * FROM ambiente_puesto"
+    con = cnxsqlite()
+    todo = con.Ejecutar("./novedades.db", sql)
     return json.dumps(todo)
 
 @app.route("/puestos/trabajo/add/elements/<id>")
@@ -146,7 +165,7 @@ def ListaUnUsuario(id):
 
 @app.route("/pt/<id>")
 def ListaUnPT(id):
-    sql = "SELECT e.idElemento, e.nombreElemento, e.barcode FROM puesto_trabajo p INNER JOIN puesto_elemento pe ON p.idPuestoTrabajo = pe.idPuestoTrabajo INNER JOIN elemento e ON pe.idElemento = e.idElemento WHERE p.idPuestoTrabajo = " + str(id)
+    sql = "SELECT e.idElemento, e.nombreElemento, e.barcode FROM puesto_trabajo p INNER JOIN puesto_elemento pe ON p.idPuestoTrabajo = pe.idPuestoTrabajo INNER JOIN elemento e ON pe.idElemento = e.idElemento WHERE p.idPuestoTrabajo =" + str(id)
     con = cnxsqlite()
     todo = con.Consultar("./novedades.db", sql)
     return json.dumps(todo)
@@ -217,9 +236,8 @@ def CrearUsuario():
 @app.route("/ambientes/i", methods=["POST"])
 def CrearAmbiente():
     datos = request.get_json()
-    idPuestoTrabajo = datos['idPuestoTrabajo']
     nombreAmbiente = datos['nombreAmbiente']
-    sql = "INSERT INTO ambiente (idPuestoTrabajo, nombreAmbiente) VALUES ('"+idPuestoTrabajo+"','"+nombreAmbiente+"')"
+    sql = "INSERT INTO ambiente (nombreAmbiente) VALUES ('"+nombreAmbiente+"')"
     con = cnxsqlite()
     todo = con.Ejecutar("./novedades.db", sql)
     return "OK"
@@ -258,6 +276,20 @@ def AddElementsToAPWS():
     todo = con.Ejecutar("./novedades.db", sql)
     return "OK"
 
+
+#ADD WORKSTATIONS TO A LEARNING CLASSROOM:
+@app.route("/ambientes/add/pts/i", methods = ["POST"])
+def AddWorkstationLearningClassrooms():
+    datos = request.get_json()
+    idAmbiente = datos['idAmbiente']
+    idPuestoTrabajo = datos['idPuestoTrabajo']
+    sql = "INSERT INTO ambiente_puesto (idAmbiente, idPuestoTrabajo) VALUES ('"+idAmbiente+"','"+idPuestoTrabajo+"')"
+    con = cnxsqlite()
+    todo = con.Ejecutar("./novedades.db", sql)
+    return "OK"    
+
+
+
 #EDITA ELEMENTO:
 @app.route("/usua/u",methods = ['PUT'])
 def EditaElemento(): 
@@ -281,10 +313,9 @@ def EditaElemento():
 def EditaAmbiente(): 
     datos = request.get_json()
     id = datos['idAmbiente']    
-    idPuestoTrabajo = datos['idPuestoTrabajo']
     nombreAmbiente = datos['nombreAmbiente']
     
-    sql = "UPDATE ambiente SET nombreAmbiente = '" + str(nombreAmbiente) + "', idPuestoTrabajo = '" + str(idPuestoTrabajo) + "' WHERE idAmbiente = " + str(id)
+    sql = "UPDATE ambiente SET nombreAmbiente = '" + str(nombreAmbiente) + "' WHERE idAmbiente = " + str(id)
     try:
         con = cnxsqlite()
         todo = con.Ejecutar("./novedades.db", sql)
