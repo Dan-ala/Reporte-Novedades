@@ -4,6 +4,8 @@
 {% block content %}
 <h2>LISTA DE AMBIENTES</h2>
 {% for x in clss_by_an_instructor %}
-<h3>{{ x }}</h3>
+<h3>{{ x[2] }}</h3>
+
+<button>Ver Ambiente</button>
 {% endfor %}
 {% endblock %}

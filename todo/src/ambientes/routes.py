@@ -23,7 +23,20 @@ def learning_classroom(id=0):
 def test():
     ambientes = requests.get("http://127.0.0.1:5000/ambientes/add/pts")
     ambiente_puesto = ambientes.json()
-    return render_template("estado_ambientes.html", ambiente_puesto=ambiente_puesto)
+
+    a = requests.get("http://127.0.0.1:5000/ambientes/to")
+    ambi = a.json()
+    idAmbiente = ambi[0]
+    
+    # Get nombrePT for the given idPuestoTrabajo
+    nombreAmbiente = None
+    for x in ambi:
+        if x[0] == idAmbiente:
+            nombreAmbiente = x[1]
+            break
+    print("NombreAmbiente :", nombreAmbiente)
+
+    return render_template("estado_ambientes.html", ambiente_puesto=ambiente_puesto, nombreAmbiente=nombreAmbiente)
 
 
 #LEARNIGN CLASSROOM LIST:
