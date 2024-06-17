@@ -1,5 +1,6 @@
 # imports
-from flask import Flask, request, render_template
+from functools import wraps
+from flask import Flask, flash, redirect, request, render_template, session, url_for
 from flask_cors import CORS
 
 #Here we are gonna import the bluprints
