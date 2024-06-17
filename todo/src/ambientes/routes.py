@@ -152,58 +152,14 @@ def ambientesBorra(id):
 #LEARNING CLASSROOMS - LIST (accountant)
 @ambientes.route("cuentadante/<idInstructor>", methods = ["GET"])
 def ambientesCuentadante(idInstructor):
-    instructors_by_idAmbiente = requests.get(f"http://127.0.0.1:5000/instructor/{idInstructor}")
+    instructors_by_idAmbiente = requests.get(f"http://127.0.0.1:5000/instructores/ambientes/{idInstructor}")
     clss_by_an_instructor = instructors_by_idAmbiente.json()
     print (f"Learning classrooms that belong to an accountant: \n {clss_by_an_instructor}")
 
+    classrooms = requests.get("http://127.0.0.1:5000/ambientes/to").json()
 
-    a = requests.get("http://127.0.0.1:5000/ambientes/to")
-    ambi = a.json()
-
-    i = requests.get("http://127.0.0.1:5000/instructores")
-    ins = i.json()
-
-    # Find the specific instructor by idInstructor
-    current_instructor = None
-    for instructor in ins:
-        if instructor[0] == int(idInstructor):
-            current_instructor = instructor
-            break
-
-    if current_instructor is None:
-        return "Instructor not found", 404
+    # Extract the names of the classrooms associated with the instructor
+    classroom_names = [classroom[1] for classroom in classrooms if classroom[0] in [ambie[1] for ambie in clss_by_an_instructor]]
 
 
-    current_cedula = current_instructor[3]
-
-    # Find other instructors with the same cedula
-    matching_instructors = []
-    for instructor in ins:
-        if instructor[3] == current_cedula:
-            matching_instructors.append(instructor)
-
-
- # Create a list to store the learning classrooms
-    learning_classrooms = []
-
-    # Get environment name for each matching instructor
-    for index, instructor in enumerate(matching_instructors):
-        idAmbiente = instructor[2]
-        nombreAmbiente = ""
-        for ambiente in ins:
-            if ambiente[0] == idAmbiente:
-                nombreAmbiente = ambiente[1]
-                break
-        # Add the instructor and environment name as a dictionary
-        learning_classrooms.append({
-            'idInstructor': instructor[0],
-            'nombreAmbiente': nombreAmbiente,
-            'cedula': instructor[3],
-            'position': index
-        })
-
-        print (f"What do we have here? \n: {learning_classrooms}")  
-
-
-
-    return render_template("lista_ambientes_cuentadante.html", clss_by_an_instructor=clss_by_an_instructor, nombreAmbiente=nombreAmbiente)
+    return render_template("lista_ambientes_cuentadante.html", clss_by_an_instructor=clss_by_an_instructor,classroom_names=classroom_names)

@@ -143,6 +143,14 @@ def ListarInsAmbientes():
     return json.dumps(todo)
 
 
+@app.route("/instructores/ambientes/<id>")
+def ListarInsPorAmbientes(id):
+    sql = "SELECT * FROM instructor_ambientes WHERE idInstructor ="+str(id)
+    con = cnxsqlite()
+    todo = con.Consultar("./novedades.db",sql)
+    return json.dumps(todo)
+
+
 
 @app.route("/novedades")
 def ListaNovedades():

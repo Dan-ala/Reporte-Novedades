@@ -1,13 +1,50 @@
+<script>
+    function Ir(cual) {
+        document.forms['mio'].action = "/ambientes/" + cual
+        document.forms['mio'].submit();
+
+
+    } function Ir1(cual) {
+        location.href = cual
+    }
+    function Confirmar(que, donde) {
+        if (confirm(que))
+            location.href = donde
+    }
+    function Va(tipo) {
+
+        if (tipo == "i")
+            document.forms['mio'].action = "/ambientes/i"
+        if (tipo == "u") {
+            document.forms['mio'].action = "/ambientes/u"
+        }
+
+        document.forms['mio'].submit();
+    }
+</script>
+
 {% extends "base.html" %}
 {% block title %}AMBIENTES{% endblock %}
 
 {% block content %}
-<h2>LISTA DE AMBIENTES</h2>
-{% for item in learning_classrooms %}
-    <h3>{{ item.nombreAmbiente }}</h3>
-    <p>Instructor ID: {{ item.idInstructor }}</p>
-    <p>Cedula: {{ item.cedula }}</p>
-    <p>Position in List: {{ item.position }}</p>
-    <button>Ver Ambiente</button>
+<br><br><br>
+<table class="instructores">
+    <h2>Ambientes de Formación</h2>
+    <thead>
+        <tr>
+            <th id="j" scope="col">Nombre Ambiente de Formación</th>
+            <th id="j" scope="col">Visualizar Ambiente</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for x in classroom_names %}
+        <td id="k" data-cell="Ambiente de Formación">{{ x }}</td>
+        <td width="100px">
+            <button class="btn w3-blue w3-hover-yellow" alt="Visualizar Ambiente" onclick="Ir1('/ambientes/estado')"
+                title="Visualizar Ambiente"><i class="fa fa-eye"></i></button>
+        </td>
+</tr>
 {% endfor %}
+</tbody>
+</table>
 {% endblock %}
