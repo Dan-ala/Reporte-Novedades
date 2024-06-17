@@ -18,11 +18,9 @@ def createDB():
     CREATE TABLE instructor (
         idInstructor INTEGER PRIMARY KEY,
         idTipoInstructor INTEGER NOT NULL,
-        idAmbiente INTEGER NOT NULL,
         cedula INTEGER NOT NULL,
         emailInstructor TEXT NOT NULL,
-        FOREIGN KEY(idTipoInstructor) REFERENCES tipo_instructor(idTipoInstructor),
-        FOREIGN KEY(idAmbiente) REFERENCES ambiente(idAmbiente)
+        FOREIGN KEY(idTipoInstructor) REFERENCES tipo_instructor(idTipoInstructor)
     );
 
 
@@ -68,7 +66,16 @@ def createDB():
     idAmbiente INTEGER,
     idPuestoTrabajo INTEGER,
     FOREIGN KEY(idAmbiente) REFERENCES ambiente(idAmbiente),
-    FOREIGN KEY(idPuestoTrabajo) REFERENCES puesto_trabajo(idPuestoTrabajo)
+    FOREIGN KEY(idPuestoTrabajo) REFERENCES puesto_trabajo(idPuestoTrabajo),
+    PRIMARY KEY (idAmbiente, idPuestoTrabajo)
+    );
+
+    CREATE TABLE instructor_ambientes (
+    idInstructor INTEGER,
+    idAmbiente INTEGER,
+    FOREIGN KEY(idInstructor) REFERENCES instructor(idInstructor),
+    FOREIGN KEY(idAmbiente) REFERENCES ambiente(idAmbiente),
+    PRIMARY KEY (idInstructor, idAmbiente)
     );
 
 

@@ -3,9 +3,11 @@
 
 {% block content %}
 <h2>LISTA DE AMBIENTES</h2>
-{% for x in clss_by_an_instructor %}
-<h3>{{ x[2] }}</h3>
-
-<button>Ver Ambiente</button>
+{% for item in learning_classrooms %}
+    <h3>{{ item.nombreAmbiente }}</h3>
+    <p>Instructor ID: {{ item.idInstructor }}</p>
+    <p>Cedula: {{ item.cedula }}</p>
+    <p>Position in List: {{ item.position }}</p>
+    <button>Ver Ambiente</button>
 {% endfor %}
 {% endblock %}

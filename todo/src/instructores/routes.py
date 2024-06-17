@@ -54,13 +54,11 @@ def InstructorList():
 @instructores_model.route("i", methods = ["POST"])
 def InstructorsInsert():
     idTipoInstructor = request.form.get('idTipoInstructor')
-    idAmbiente = request.form.get('idAmbiente')
     cedula = request.form.get('cedula')
     emailInstructor = request.form.get('emailInstructor')
     instructor = Usuario("http://127.0.0.1:5000/instructores")
     datos = {
         "idTipoInstructor": idTipoInstructor,
-        "idAmbiente": idAmbiente,
         "cedula": cedula,
         "emailInstructor": emailInstructor
     }
@@ -70,19 +68,71 @@ def InstructorsInsert():
     return render_template("alertas.html", msgito=msgitos)
 
 
+
+#ADD LEARNING CLASSROOMS TO AN INSTRUCTOR:
+@instructores_model.route("add/learning/classrooms/i", methods = ["POST"])
+def add_clss():
+    idInstructor = request.form.get('idInstructor')
+    idAmbiente = request.form.get('idAmbiente')
+    instructor = Usuario("http://127.0.0.1:5000/instructores/add/learning/classrooms")
+    datos = {
+        "idInstructor": idInstructor,
+        "idAmbiente": idAmbiente
+    }
+    instructor.Inserte(datos)
+    id=0
+    msgitos = "Ambiente asignado al instructor"
+    return render_template("alertas.html", msgito=msgitos)
+
+
+#ADD WKS TO A LEARNING CLASSROOM:
+@instructores_model.route("add/learning/classrooms/<idInstructor>", methods=["GET"])
+def AddClssToAnInstructor(idInstructor):
+    a = requests.get("http://127.0.0.1:5000/ambientes/to")
+    ambientes = a.json()
+
+    i = requests.get(f"http://127.0.0.1:5000/instructor/{idInstructor}")
+    instructor = i.json()
+    print (f"Current instructor: {instructor}")
+
+
+
+    cadena = i.json()
+    cadena2 = a.json()
+    # print (f"Posicion 1: {cadena[0][1]}")
+    print (f" Instructors: {cadena} \n and Learning Classrooms: {cadena2}")
+    can = len(cadena)
+
+    #testing
+    classrooms = [classroom[2] for classroom in cadena]
+    print (f"Classrooms already taken by an instructor: {classrooms}")
+
+    classrooms_not_designated = []
+    msg = "No hay ambientes para..."
+
+    for l_classroom in cadena2:
+        if l_classroom[0] not in classrooms:
+            classrooms_not_designated.append(l_classroom)
+
+    print(f"Classrooms not designated: {classrooms_not_designated}")
+
+
+    return render_template("instructores.html", N=8, ambientes=ambientes,instructor=instructor,classrooms_not_designated=classrooms_not_designated)
+
+
+
+
 #ACTUALIZA INSTRUCTOR:
 @instructores_model.route("u", methods=["POST"])
 def ActualizaInstructor():
     id = request.form.get('idInstructor')
     idTipoInstructor = request.form.get('idTipoInstructor')
-    idAmbiente = request.form.get('idAmbiente')
     cedula = request.form.get('cedula')
     emailInstructor = request.form.get('emailInstructor')
     instructor = Usuario("http://127.0.0.1:5000/instructores")
     datos = {
         "idInstructor": id,
         "idTipoInstructor": idTipoInstructor,
-        "idAmbiente": idAmbiente,
         "cedula": cedula,
         "emailInstructor": emailInstructor
     }

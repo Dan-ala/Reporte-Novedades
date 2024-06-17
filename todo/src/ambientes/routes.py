@@ -23,20 +23,7 @@ def learning_classroom(id=0):
 def test():
     ambientes = requests.get("http://127.0.0.1:5000/ambientes/add/pts")
     ambiente_puesto = ambientes.json()
-
-    a = requests.get("http://127.0.0.1:5000/ambientes/to")
-    ambi = a.json()
-    idAmbiente = ambi[0]
-    
-    # Get nombrePT for the given idPuestoTrabajo
-    nombreAmbiente = None
-    for x in ambi:
-        if x[0] == idAmbiente:
-            nombreAmbiente = x[1]
-            break
-    print("NombreAmbiente :", nombreAmbiente)
-
-    return render_template("estado_ambientes.html", ambiente_puesto=ambiente_puesto, nombreAmbiente=nombreAmbiente)
+    return render_template("estado_ambientes.html", ambiente_puesto=ambiente_puesto)
 
 
 #LEARNIGN CLASSROOM LIST:
@@ -168,4 +155,55 @@ def ambientesCuentadante(idInstructor):
     instructors_by_idAmbiente = requests.get(f"http://127.0.0.1:5000/instructor/{idInstructor}")
     clss_by_an_instructor = instructors_by_idAmbiente.json()
     print (f"Learning classrooms that belong to an accountant: \n {clss_by_an_instructor}")
-    return render_template("lista_ambientes_cuentadante.html", clss_by_an_instructor=clss_by_an_instructor)
+
+
+    a = requests.get("http://127.0.0.1:5000/ambientes/to")
+    ambi = a.json()
+
+    i = requests.get("http://127.0.0.1:5000/instructores")
+    ins = i.json()
+
+    # Find the specific instructor by idInstructor
+    current_instructor = None
+    for instructor in ins:
+        if instructor[0] == int(idInstructor):
+            current_instructor = instructor
+            break
+
+    if current_instructor is None:
+        return "Instructor not found", 404
+
+
+    current_cedula = current_instructor[3]
+
+    # Find other instructors with the same cedula
+    matching_instructors = []
+    for instructor in ins:
+        if instructor[3] == current_cedula:
+            matching_instructors.append(instructor)
+
+
+ # Create a list to store the learning classrooms
+    learning_classrooms = []
+
+    # Get environment name for each matching instructor
+    for index, instructor in enumerate(matching_instructors):
+        idAmbiente = instructor[2]
+        nombreAmbiente = ""
+        for ambiente in ins:
+            if ambiente[0] == idAmbiente:
+                nombreAmbiente = ambiente[1]
+                break
+        # Add the instructor and environment name as a dictionary
+        learning_classrooms.append({
+            'idInstructor': instructor[0],
+            'nombreAmbiente': nombreAmbiente,
+            'cedula': instructor[3],
+            'position': index
+        })
+
+        print (f"What do we have here? \n: {learning_classrooms}")  
+
+
+
+    return render_template("lista_ambientes_cuentadante.html", clss_by_an_instructor=clss_by_an_instructor, nombreAmbiente=nombreAmbiente)

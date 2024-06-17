@@ -39,6 +39,14 @@
         document.forms['mio'].submit();    
      
        }
+
+       function Re(tipo){
+        if (tipo == "ii") {
+            document.forms['mio'].action = "/instructores/add/learning/classrooms/i"
+        }
+        const form = document.forms['mio'];
+        document.forms['mio'].submit();
+    }
     </script>
     <center>
 
@@ -75,17 +83,7 @@
                   <br><br>
               </td>
           </tr>
-          <tr>
-            <td>Seleccione el ambiente:</td>
-            <td>
-                <select name="idAmbiente" id="idAmbiente" class="w3-select" required>
-                    {% for x in classrooms_not_designated %}
-                    <option value="{{ x[0] }}">{{ x[1] }}</option>
-                    {% endfor %}
-                </select>
-                <br><br>
-            </td>
-            </tr>
+          
           <td>Cédula:</font>
           </td>
           <td><input class="sena-fondo" type="number" id="cedula" name="cedula" required><br></td>
@@ -107,9 +105,9 @@
       <thead>
           <tr>
               <th id="j" scope="col">Tipo</th>
-              <th id="j" scope="col">Ambiente a cargo</th>
               <th id="j" scope="col">CC</th>
               <th id="j" scope="col">E-mail</th>
+              <th id="j" scope="col">Asignar ambiente</th>
               <th id="j" scope="col">Editar</th>
               <th id="j" scope="col">Delete</th>
           </tr>
@@ -124,15 +122,13 @@
                     {% endif %}
                 {% endfor %}
             </td>
-            <td id="k" data-cell="Ambiente acargo">
-                {% for ambiente in cadena2 %}
-                    {% if ambiente[0] == instructor[2] %}
-                        {{ ambiente[1] }}
-                    {% endif %}
-                {% endfor %}
+            <td id="k" data-cell="CC">{{ instructor[2] }}</td>
+            <td id="k" data-cell="Email">{{ instructor[3] }}</td>
+            <td id="k" data-cell="Asignar ambiente">
+                <button class="btn w3-green w3-hover-yellow" alt="Asignar ambiente"
+                onclick="Ir1('/instructores/add/learning/classrooms/{{instructor[0]}}')" title="Asignar ambiente"><i
+                    class="fa fa-plus"></i></button>
             </td>
-            <td id="k" data-cell="CC">{{ instructor[3] }}</td>
-            <td id="k" data-cell="Email">{{ instructor[4] }}</td>
             <td id="k" width="100px">
               <button class="btn w3-blue w3-hover-yellow" alt="Editar"
                   onclick="Ir1('/instructores/e/{{instructor[0]}}')" title="Editar"><i
@@ -175,25 +171,13 @@
                 <br><br>
             </td>
         </tr>
-        <tr>
-          <td>Seleccione el ambiente:</td>
-          <td>
-              <select name="idAmbiente" id="idAmbiente" class="w3-select" required>
-                  {% for x in cadena2 %}
-                  <option value="{{ x[0] }}">{{ x[1] }}</option>
-                  {% endfor %}
-              </select>
-              <br><br>
-          </td>
-      </tr>
-
         <td>Cédula:</font>
         </td>
-        <td><input class="sena-fondo" type="number" id="cedula" name="cedula" value="{{ x[3] }}" required><br></td>
+        <td><input class="sena-fondo" type="number" id="cedula" name="cedula" value="{{ x[2] }}" required><br></td>
         </tr>
         <td>E-mail:</font>
         </td>
-        <td><input class="sena-fondo" type="text" id="emailInstructor" value="{{ x[4] }}" name="emailInstructor" required><br></td>
+        <td><input class="sena-fondo" type="text" id="emailInstructor" value="{{ x[3] }}" name="emailInstructor" required><br></td>
         </tr>
         <td colspan=2><br><input type="button" value="Grabar" onclick="Va('u')"
             class="w3-button w3-round w3-green">
@@ -208,5 +192,47 @@
     <br><br><br><br><br>
 </td>
   {% endif %}
+
+
+  {% if N == 8 %}
+        <br>
+        <div class="addClssToAnInstructor">
+            <table class="sena__information-card-text w3-centered">
+                <tr>
+                    <td colspan=2>
+                        <h5 class="sena-sombra w3-green sena-+p100">ASIGNAR AMBIENTES</h5>
+                    </td>
+                </tr>
+                <tr>
+                    <form name="mio" method="POST" action="/instructores/add/learning/classrooms/i"
+                        class="row g-3">
+                        <input type="hidden" id="idInstructor" name="idInstructor" value="">
+                        <tr>
+                            <td>Seleccione el ambiente:</td>
+                            <td>
+                                <select name="idAmbiente" id="idAmbiente" class="w3-select" required>
+                                    {% for x in classrooms_not_designated %}
+                                    <option value="{{ x[0] }}">{{ x[1] }}</option>
+                                    {% endfor %}
+                                </select>
+                                <br><br>
+                            </td>
+                        </tr>
+                <tr>
+                    <td colspan="2">
+                        <br><br>
+                        <input type="submit" value="Grabar" class="w3-button w3-round w3-green">
+                        <input type="button" class="w3-button w3-round w3-black" value="Regresar"
+                            onclick="history.back()">
+                    </td>
+                </tr>
+                </form>
+                </tr>
+            </table>
+            <br><br><br><br><br>
+        </div>
+        <script src="{{ url_for('static', filename='js/instructor_ambientes.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/multi-select.js') }}"></script>
+    {% endif %}
 
 {% endblock %}

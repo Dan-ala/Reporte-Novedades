@@ -112,12 +112,12 @@ def ambi_pts():
     todo = con.Ejecutar("./novedades.db", sql)
     return json.dumps(todo)
 
-@app.route("/puestos/trabajo/add/elements/<id>")
-def sxs(id):
-    sql = "SELECT * from puesto_elemento where idPuestoTrabajo="+str(id)
-    con = cnxsqlite()
-    todo = con.Consultar("./novedades.db", sql)
-    return json.dumps(todo)
+# @app.route("/puestos/trabajructores/<id>o/add/elements/<id>")
+# def sxs(id):
+#     sql = "SELECT * from puesto_elemento where idPuestoTrabajo="+str(id)
+#     con = cnxsqlite()
+#     todo = con.Consultar("./novedades.db", sql)
+#     return json.dumps(todo)
 
 @app.route("/puestos/trabajo/<id>")
 def pepe(id):
@@ -132,6 +132,17 @@ def ListaInstructores():
     con = cnxsqlite()
     todo = con.Consultar("./novedades.db", sql)
     return json.dumps(todo)
+
+
+#LISTAR INSTRUCTOR_AMBIENTES
+@app.route("/instructores/ambientes")
+def ListarInsAmbientes():
+    sql = "SELECT * FROM instructor_ambientes"
+    con = cnxsqlite()
+    todo = con.Consultar("./novedades.db",sql)
+    return json.dumps(todo)
+
+
 
 @app.route("/novedades")
 def ListaNovedades():
@@ -246,10 +257,9 @@ def CrearAmbiente():
 def CrearInstructor():
     datos = request.get_json()
     idTipoInstructor = datos['idTipoInstructor']
-    idAmbiente = datos['idAmbiente']
     cedula = datos['cedula']
     emailInstructor = datos['emailInstructor']
-    sql = "INSERT INTO instructor (idTipoInstructor, idAmbiente, cedula, emailInstructor) VALUES ('"+idTipoInstructor+"','"+idAmbiente+"','"+cedula+"','"+emailInstructor+"')"
+    sql = "INSERT INTO instructor (idTipoInstructor, cedula, emailInstructor) VALUES ('"+idTipoInstructor+"','"+cedula+"','"+emailInstructor+"')"
     con = cnxsqlite()
     todo = con.Ejecutar("./novedades.db", sql)
     return "OK"
@@ -287,6 +297,19 @@ def AddWorkstationLearningClassrooms():
     con = cnxsqlite()
     todo = con.Ejecutar("./novedades.db", sql)
     return "OK"    
+
+
+
+#ADD WORKSTATIONS TO A LEARNING CLASSROOM:
+@app.route("/instructores/add/learning/classrooms/i", methods = ["POST"])
+def AddClssToAnInstructor():
+    datos = request.get_json()
+    idInstructor = datos['idInstructor']
+    idAmbiente = datos['idAmbiente']
+    sql = "INSERT INTO instructor_ambientes (idInstructor, idAmbiente) VALUES ('"+idInstructor+"','"+idAmbiente+"')"
+    con = cnxsqlite()
+    todo = con.Ejecutar("./novedades.db", sql)
+    return "OK"  
 
 
 
@@ -330,10 +353,9 @@ def EditaInstructor():
     datos = request.get_json()
     id = datos['idInstructor']
     idTipoInstructor = datos['idTipoInstructor']
-    idAmbiente = datos['idAmbiente']
     cedula = datos['cedula']
     emailInstructor = datos['emailInstructor']
-    sql = "UPDATE instructor SET emailInstructor = '"+emailInstructor+"', idTipoInstructor = '"+idTipoInstructor+"', idAmbiente = '"+idAmbiente+"', cedula = '"+cedula+"' WHERE idInstructor = "+str(id)
+    sql = "UPDATE instructor SET emailInstructor = '"+emailInstructor+"', idTipoInstructor = '"+idTipoInstructor+"', cedula = '"+cedula+"' WHERE idInstructor = "+str(id)
     try:
         con = cnxsqlite()
         todo = con.Ejecutar("./novedades.db",sql)

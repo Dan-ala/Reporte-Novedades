@@ -34,55 +34,39 @@ def new_novelty():
     nove.Inserte(datos)
 
     # Fetching data from APIs
-    instructors = requests.get("http://127.0.0.1:5000/instructores")
-    cadena = instructors.json()
-    print("Instructors:", cadena)
+    instructors = requests.get("http://127.0.0.1:5000/instructores").json()
+    print("Instructors:", instructors)
 
-    ambi = requests.get("http://127.0.0.1:5000/ambientes/to")
-    cadena2 = ambi.json()
-    print("Classrooms:", cadena2)
+    classrooms = requests.get("http://127.0.0.1:5000/ambientes/to").json()
+    print("Classrooms:", classrooms)
 
-    puesto_t = requests.get("http://127.0.0.1:5000/puestos/trabajo")
-    pt = puesto_t.json()
-    print("Workstations:", pt)
+    workstations = requests.get("http://127.0.0.1:5000/puestos/trabajo").json()
+    print("Workstations:", workstations)
 
-    elementos = requests.get("http://127.0.0.1:5000/usua/to")
-    element = elementos.json()
-    print("Elements:", element)
+    elements = requests.get("http://127.0.0.1:5000/usua/to").json()
+    print("Elements:", elements)
+
+    inst_ambi = requests.get("http://127.0.0.1:5000/instructores/ambientes").json()
+    print("Instructor-Ambiente Relationships:", inst_ambi)
 
     # Get nombrePT for the given idPuestoTrabajo
-    nombrePT = None
-    for puesto in pt:
-        if puesto[0] == int(idPuestoTrabajo):
-            nombrePT = puesto[1]
-            break
+    nombrePT = next((pt[1] for pt in workstations if pt[0] == int(idPuestoTrabajo)), None)
     print("Nombre PT:", nombrePT)
 
     # Get nombreElemento for the given idElemento
-    nombreElemento = None
-    for e in element:
-        if e[0] == int(idElemento):
-            nombreElemento = e[2]
-            break
+    nombreElemento = next((e[2] for e in elements if e[0] == int(idElemento)), None)
     print("Nombre Elemento:", nombreElemento)
 
-    msgitos = "Novedad registrada pero no se encontró el profesor correspondiente para enviar el correo."
-
-    # Find the correct classroom name
-    classroom_name = None
-    for classroom in cadena2:
-        if classroom[0] == int(idPuestoTrabajo):
-            classroom_name = classroom[1]
-            break
+    # Get classroom_name for the given idPuestoTrabajo
+    classroom_name = next((classroom[1] for classroom in classrooms if classroom[0] == int(idPuestoTrabajo)), None)
     print("Classroom Name:", classroom_name)
 
-    # Find the correct instructor email
-    instructor_email = None
-    for instructor in cadena:
-        if instructor[2] == int(idPuestoTrabajo):
-            instructor_email = instructor[4]
-            break
+    # Find the instructor email using the environment id
+    idAmbiente = next((ambi[1] for ambi in inst_ambi if ambi[0] == int(idPuestoTrabajo)), None)
+    instructor_email = next((instructor[3] for instructor in instructors if instructor[0] == idAmbiente), None)
     print("Instructor Email:", instructor_email)
+
+    msgitos = "Novedad registrada pero no se encontró el profesor correspondiente para enviar el correo."
 
     if instructor_email:
         try:
