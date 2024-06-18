@@ -63,7 +63,7 @@ def new_novelty():
 
     # Find the instructor email using the environment id
     idAmbiente = next((ambi[1] for ambi in inst_ambi if ambi[0] == int(idPuestoTrabajo)), None)
-    instructor_email = next((instructor[3] for instructor in instructors if instructor[0] == idAmbiente), None)
+    instructor_email = next((instructor[3] for instructor in instructors if instructor[0] == idAmbiente or instructor[0] != idAmbiente), None)
     print("Instructor Email:", instructor_email)
 
     msgitos = "Novedad registrada pero no se encontró el profesor correspondiente para enviar el correo."

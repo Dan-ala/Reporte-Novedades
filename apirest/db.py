@@ -13,7 +13,8 @@ def createDB():
 
     INSERT INTO tipo_instructor (tipoInstructor)
     VALUES ("CUENTADANTE"),
-           ("INSTRUCTOR");
+           ("INSTRUCTOR"),
+           ("ADMINISTRADOR");
 
     CREATE TABLE instructor (
         idInstructor INTEGER PRIMARY KEY,
@@ -89,13 +90,7 @@ def createDB():
         FOREIGN KEY(idElemento) REFERENCES elemento(idElemento)
     );
 
-    CREATE TABLE novedades_elementos (
-        idNovedad INTEGER,
-        idElemento INTEGER,
-        FOREIGN KEY(idNovedad) REFERENCES novedades(idNovedad),
-        FOREIGN KEY(idElemento) REFERENCES elemento(idElemento),
-        PRIMARY KEY(idNovedad, idElemento)
-    );
+
 
     
     CREATE TRIGGER delete_element_trigger
@@ -119,23 +114,3 @@ def createDB():
 
 if __name__ == "__main__":
     createDB()
-    
-    # # Insert a general novelty for the desktop
-    # insert_general_novelty(2,"General novelty for desktop")
-    
-    # # Insert a novelty for a specific element
-    # insert_element_novelty(1, 1, "Novelty for CPU")
-
-    # # Retrieve the inserted novelties
-    # novelties = get_novelties_report()
-    # print("All Novelties:")
-    # for novelty in novelties:
-    #     print("ID:", novelty[0])
-    #     if novelty[2]:  # Check if the novelty is associated with an element
-    #         print("Element ID:", novelty[2])
-    #         print("Description:", novelty[3])
-    #     else:
-    #         print("General Desktop Novelty")
-    #         print("Description:", novelty[3])
-    #     print("Date:", novelty[4])
-    #     print()

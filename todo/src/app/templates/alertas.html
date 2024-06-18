@@ -1,20 +1,23 @@
 {% extends "base.html" %}
 {% block content %}
-            <form action="/ppa">
-            <div class="w3-container">
-                <div class="sena-card2">
-            <header class="sena-sombra sena-color"><font size=6 color=darkgreen ><b>{{ msgito }}<b></font></header></div>
-            
+    <form action="/ppa">
+        <div class="w3-container">
+            <div class="sena-card2">
+                <header class="sena-sombra sena-color">
+                    <font size=6 color=darkgreen><b>{{ msgito }}</b></font>
+                </header>
+            </div>
             <br><br>
-            
-            </form>
+        </div>
+    </form>
 
-        <script>
-            function Voy(){
-            location.href="/menu"
-            }
-            setTimeout('Voy()',3000)
-        </script>
-        {% endblock content %}
-    </body>
-</html>
+    <script>
+        setTimeout(function() {
+            {% if current_user.is_authenticated and current_user.idTipoInstructor == 1 %}
+                window.location.href = "/menu/accountant";
+            {% else %}
+                window.location.href = "/menu";
+            {% endif %}
+        }, 3000);
+    </script>
+{% endblock %}

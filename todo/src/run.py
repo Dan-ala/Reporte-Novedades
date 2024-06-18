@@ -25,20 +25,28 @@ def login():
         cedula = int(request.form.get("cedula"))
         emailInstructor = request.form.get("emailInstructor")
 
-        found = False
+        found_accountant = False
+        found_admin = False
         for instructor in instructors:
             if len(instructor) >= 4 and cedula == instructor[2] and emailInstructor == instructor[3]:
                 if instructor[1] == 1:  # Check if instructor type is suitable for login
                     user = UsuarioLogin([instructor[0], instructor[1], instructor[2], instructor[3]])
                     login_user(user)  # Log in the user
-                    found = True
+                    found_accountant = True
+                    break
+                elif instructor[1] == 3:
+                    user = UsuarioLogin([instructor[0], instructor[1], instructor[2], instructor[3]])
+                    login_user(user)  # Log in the user
+                    found_admin = True
                     break
                 else:
                     flash(f"El instructor con cc: {instructor[2]} NO es un cuentadante.")
                     return redirect(url_for('login'))
         
-        if found:
-            return redirect(url_for('menu.lista'))  # Redirect to the menu after successful login
+        if found_accountant:
+            return redirect(url_for('menu.accountant'))  # Redirect to the menu after successful login
+        elif found_admin:
+            return redirect(url_for('menu.lista'))
         else:
             flash("Cédula o E-mail incorrectos")
             return redirect(url_for('login'))

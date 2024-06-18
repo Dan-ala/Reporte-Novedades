@@ -5,7 +5,7 @@ from services.apicnx import Usuario
 
 from flask import Blueprint
 
-from flask_login import login_required
+from flask_login import current_user, login_required
 
 ambientes = Blueprint('ambientes', __name__, url_prefix='/ambientes',
                       template_folder='templates')
@@ -163,17 +163,17 @@ def ambientesBorra(id):
 
 
 #LEARNING CLASSROOMS - LIST (accountant)
-@ambientes.route("cuentadante/<idInstructor>", methods = ["GET"])
+@ambientes.route("cuentadante", methods=["GET"])
 @login_required
-def ambientesCuentadante(idInstructor):
+def ambientesCuentadante():
+    idInstructor = current_user.idInstructor  # Assuming this attribute exists on your User class
     instructors_by_idAmbiente = requests.get(f"http://127.0.0.1:5000/instructores/ambientes/{idInstructor}")
     clss_by_an_instructor = instructors_by_idAmbiente.json()
-    print (f"Learning classrooms that belong to an accountant: \n {clss_by_an_instructor}")
+    print(f"Learning classrooms that belong to an accountant: \n {clss_by_an_instructor}")
 
     classrooms = requests.get("http://127.0.0.1:5000/ambientes/to").json()
 
     # Extract the names of the classrooms associated with the instructor
     classroom_names = [classroom[1] for classroom in classrooms if classroom[0] in [ambie[1] for ambie in clss_by_an_instructor]]
 
-
-    return render_template("lista_ambientes_cuentadante.html", clss_by_an_instructor=clss_by_an_instructor,classroom_names=classroom_names)
+    return render_template("lista_ambientes_cuentadante.html", clss_by_an_instructor=clss_by_an_instructor, classroom_names=classroom_names)

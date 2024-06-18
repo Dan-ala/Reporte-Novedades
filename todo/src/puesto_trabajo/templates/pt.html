@@ -38,41 +38,50 @@ function Ir1(url, workstationName, elementName) {
 
     <!-- EDILISTAR REGISTROS -->
     {% if N == 0 %}
-    <table class="w3-table w3-striped w3-border" border="1">
-        <thead>
-            <tr>
-                <th scope="col">Elemento</th>
-                <th scope="col">Registrar Novedad</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for key, value in cadena_dict.items() %}
-            <tr>
-                <td>{{ value }}</td>
-                <td>
-                    <button onclick="Ir1('/novedades/registrar/novedad/{{ workstation_id }}/{{ key }}', '{{ workstation_name }}', '{{ value }}')"
-                        class="w3-round w3-button w3-orange">Registrar Novedad</button>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    <br>
-    <input type="button" class="w3-button w3-round w3-black" value="Regresar" onclick="history.back()">
-    <!-- <input type="button" class="w3-button w3-round w3-green" value="Registrar Novedad General" onclick="history.back()"> -->
-    <!-- <button class="w3-button w3-round w3-red" onclick="promptClose();">
-        Cerrar Sesión
-    </button>
-    <script type="text/javascript">
-        function promptClose() {
-            Swal.fire({
-                title: "ALERTA",
-                text: "Por favor, cierra esta página.",
-                icon: "warning",
-            })
-        }
-    </script> -->
+    {% if current_user.is_authenticated and current_user.idTipoInstructor == 1 %}
+        <table class="w3-table w3-striped w3-border" border="1">
+            <thead>
+                <tr>
+                    <th scope="col">Elemento</th>
+                    <th scope="col">Barcode</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for x in lucas %}
+                <tr>
+                    <td>{{ x[1] }}</td>
+                    <td>{{ x[2] }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <br>
+        <input type="button" class="w3-button w3-round w3-black" value="Regresar" onclick="history.back()">
+    {% else %}
+        <table class="w3-table w3-striped w3-border" border="1">
+            <thead>
+                <tr>
+                    <th scope="col">Elemento</th>
+                    <th scope="col">Registrar Novedad</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for key, value in cadena_dict.items() %}
+                <tr>
+                    <td>{{ value }}</td>
+                    <td>
+                        <button onclick="Ir1('/novedades/registrar/novedad/{{ workstation_id }}/{{ key }}', '{{ workstation_name }}', '{{ value }}')"
+                                class="w3-round w3-button w3-orange">Registrar Novedad</button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <br>
+        <input type="button" class="w3-button w3-round w3-black" value="Regresar" onclick="history.back()">
     {% endif %}
+{% endif %}
+
 
     <!--CREAR UN REGISTRO-->
     {% if N == '1' %}
