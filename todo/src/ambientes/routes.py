@@ -5,21 +5,26 @@ from services.apicnx import Usuario
 
 from flask import Blueprint
 
+from flask_login import login_required
+
 ambientes = Blueprint('ambientes', __name__, url_prefix='/ambientes',
                       template_folder='templates')
 
 
 #AMBIENTES
 @ambientes.route("/0", methods=["GET","POST"])
+@login_required
 def index5():
     return render_template("ambientes.html", N="0")
 
 @ambientes.route("/<id>", methods=["GET","POST"])
+@login_required
 def learning_classroom(id=0):
     return render_template("ambientes.html", N=id)
 
 #LEARNING CLASSROOM STATUS
 @ambientes.route("estado", methods = ["GET"])
+@login_required
 def test():
     ambientes = requests.get("http://127.0.0.1:5000/ambientes/add/pts")
     ambiente_puesto = ambientes.json()
@@ -28,6 +33,7 @@ def test():
 
 #LEARNIGN CLASSROOM LIST:
 @ambientes.route("", methods=["GET"])
+@login_required
 def AmbienteList():
     ambientes = Usuario("http://127.0.0.1:5000/ambientes")
     a = requests.get("http://127.0.0.1:5000/ambientes/to")
@@ -59,6 +65,7 @@ def AmbienteList():
 
 #NEW LEARNING CLASSROOM
 @ambientes.route("i", methods=["POST"])
+@login_required
 def LearningClassroomInsert():
     nombreAmbiente = request.form.get ('nombreAmbiente')
     ambi = Usuario("http://127.0.0.1:5000/ambientes")
@@ -73,6 +80,7 @@ def LearningClassroomInsert():
 
 #ADD WORKSTATIONS TO A LEARNING CLASSROOM:
 @ambientes.route("add/pts/i", methods = ["POST"])
+@login_required
 def add_wks():
     idAmbiente = request.form.get('idAmbiente')
     idPuestoTrabajo = request.form.get('idPuestoTrabajo')
@@ -89,6 +97,7 @@ def add_wks():
 
 #ADD WKS TO A LEARNING CLASSROOM:
 @ambientes.route("add/pts/<idAmbiente>", methods=["GET"])
+@login_required
 def AddElementsToAWorkstation(idAmbiente):
     response = requests.get("http://127.0.0.1:5000/puestos/trabajo")
     puestos_t = response.json()
@@ -105,6 +114,7 @@ def AddElementsToAWorkstation(idAmbiente):
 
 #REGISTRO DE AMBIENTE DE FORMACION:
 @ambientes.route("1", methods = ["GET","POST"])
+@login_required
 def ambiente_record():
     response = requests.get("http://127.0.0.1:5000/puestos/trabajo")
     puestos_t = response.json()
@@ -113,6 +123,7 @@ def ambiente_record():
 
 #ACTUALIZA AMBIENTE:
 @ambientes.route("u", methods=["POST"])
+@login_required
 def ActualizaAmbiente():
     id = request.form.get('id')
     idPuestoElemento=request.form.get('idPuestoElemento')
@@ -129,6 +140,7 @@ def ActualizaAmbiente():
     return render_template("alertas.html", msgito=msgitos)
 
 @ambientes.route("e/<id>", methods=["GET"])
+@login_required
 def EditaAmbiente(id):
     ambi= Usuario("http://127.0.0.1:5000/ambientes")
     pue_tra = requests.get("http://127.0.0.1:5000/puestos/trabajo")
@@ -139,6 +151,7 @@ def EditaAmbiente(id):
 
 #DELETE LEARNING CLASSROOMS:
 @ambientes.route("d/<id>", methods = ["GET"])
+@login_required
 def ambientesBorra(id):
     ambi = Usuario("http://127.0.0.1:5000/ambientes")
     cadena = ambi.Borra(id)
@@ -151,6 +164,7 @@ def ambientesBorra(id):
 
 #LEARNING CLASSROOMS - LIST (accountant)
 @ambientes.route("cuentadante/<idInstructor>", methods = ["GET"])
+@login_required
 def ambientesCuentadante(idInstructor):
     instructors_by_idAmbiente = requests.get(f"http://127.0.0.1:5000/instructores/ambientes/{idInstructor}")
     clss_by_an_instructor = instructors_by_idAmbiente.json()

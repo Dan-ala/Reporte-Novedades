@@ -1,3 +1,4 @@
+from flask_login import UserMixin
 import json,requests
 class Usuario:
     url=None
@@ -35,3 +36,23 @@ class Usuario:
         response = requests.delete(self.url+"/d")
     def Actualiza(self,data):
         response = requests.put(self.url+"/u", json=data)
+
+
+class UsuarioLogin(UserMixin):
+    def __init__(self, data):
+        self.idInstructor = data[0]
+        self.idTipoInstructor = data[1]
+        self.cedula = data[2]
+        self.emailInstructor = data[3]
+
+    def is_authenticated(self):
+        return True
+
+    def is_active(self):
+        return True
+
+    def is_anonymous(self):
+        return False
+
+    def get_id(self):
+        return str(self.idInstructor)

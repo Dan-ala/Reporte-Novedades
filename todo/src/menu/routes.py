@@ -1,5 +1,7 @@
 from flask import render_template
 
+from flask_login import login_required
+
 from flask import Blueprint
 
 menu = Blueprint('menu', __name__, url_prefix='/menu',
@@ -7,7 +9,8 @@ menu = Blueprint('menu', __name__, url_prefix='/menu',
 
 #INDEX PAGE:
 @menu.route("", methods = ["GET"])
-def Lista():
+@login_required
+def lista():
     menu = (["Ambientes","Instructores","Puesto de Trabajo","Novedades","Elementos"])
     menu1 = (["ambientes.jpg","instructores.jpeg","pt.png","novelties.png","elementos.jpg"])
     n = len(menu)
