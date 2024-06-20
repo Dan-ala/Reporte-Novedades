@@ -24,6 +24,11 @@ def createDB():
         FOREIGN KEY(idTipoInstructor) REFERENCES tipo_instructor(idTipoInstructor)
     );
 
+    INSERT INTO instructor (idTipoInstructor, cedula, emailInstructor)
+    VALUES (3, 1025141238, "davids_quevedo@soy.sena.edu.co"),
+    (3, 1003673047, "jstunjano7@soy.sena.edu.co"),
+    (3, 1021396143, "dsalarcon@soy.sena.edu.co");
+
 
     CREATE TABLE tipo_elemento (
         idTipoElemento INTEGER PRIMARY KEY,
