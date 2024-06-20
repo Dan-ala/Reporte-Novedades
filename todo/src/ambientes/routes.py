@@ -22,13 +22,105 @@ def index5():
 def learning_classroom(id=0):
     return render_template("ambientes.html", N=id)
 
-#LEARNING CLASSROOM STATUS
-@ambientes.route("estado", methods = ["GET"])
+
+# LEARNING CLASSROOM STATUS
+@ambientes.route("estado", methods=["GET"])
 @login_required
 def test():
-    ambientes = requests.get("http://127.0.0.1:5000/ambientes/add/pts")
-    ambiente_puesto = ambientes.json()
-    return render_template("estado_ambientes.html", ambiente_puesto=ambiente_puesto)
+    idInstructor = current_user.idInstructor  # Assuming this attribute exists on your User class
+    instructors_by_idAmbiente_response = requests.get(f"http://127.0.0.1:5000/instructores/ambientes/{idInstructor}")
+    clss_by_an_instructor = instructors_by_idAmbiente_response.json()
+    print(f"Learning classrooms that belong to an accountant: \n{clss_by_an_instructor}")
+
+    ambientes_response = requests.get("http://127.0.0.1:5000/ambientes/add/pts")
+    ambiente_puesto = ambientes_response.json()
+    print(ambiente_puesto)
+
+    instructor_pt_response = requests.get("http://127.0.0.1:5000/ambientes/pts")
+    i = instructor_pt_response.json()
+    print(i)
+
+    novelties_response = requests.get("http://127.0.0.1:5000/novedades")  # Adjust the endpoint as needed
+    novelties = novelties_response.json()
+    print(f"Novelties: {novelties}")
+
+    # List to hold matching workstations with novelty status
+    matching_workstations = []
+
+    # Loop through each classroom that belongs to the instructor
+    for classroom in clss_by_an_instructor:
+        idInstructor_classroom = classroom[0]  # idInstructor from the classroom list
+        idAmbiente = classroom[1]  # idAmbiente from the classroom list
+
+        # Check against each workstation
+        for workstation in i:
+            ws_idAmbiente = workstation[0]  # idAmbiente from the workstation list
+            ws_idPuestoTrabajo = workstation[1]  # idPuestoTrabajo from the workstation list
+
+            if idAmbiente == ws_idAmbiente:
+                # Find the name of the puesto trabajo
+                ws_name = next((x[3] for x in ambiente_puesto if x[2] == ws_idPuestoTrabajo), None)
+                # Check if this puesto trabajo has a novelty
+                has_novelty = any(novelty[1] == ws_idPuestoTrabajo for novelty in novelties)
+                matching_workstations.append((idInstructor_classroom, ws_idPuestoTrabajo, ws_name, has_novelty))
+                print(f"Workstation that belongs to {idInstructor_classroom}: {ws_name} {'(Novelty)' if has_novelty else ''}")
+
+    return render_template("estado_ambientes.html", ambiente_puesto=ambiente_puesto, ws_idPuestoTrabajo=matching_workstations)
+
+
+# LEARNING CLASSROOM STATUS
+@ambientes.route("estado/<idInstructor>", methods=["GET"])
+def testxx(idInstructor):
+    instructors_by_idAmbiente_response = requests.get(f"http://127.0.0.1:5000/instructores/ambientes/{idInstructor}")
+    clss_by_an_instructor = instructors_by_idAmbiente_response.json()
+    print(f"Learning classrooms that belong to an accountant: \n{clss_by_an_instructor}")
+
+    ambientes_response = requests.get("http://127.0.0.1:5000/ambientes/add/pts")
+    ambiente_puesto = ambientes_response.json()
+    print(ambiente_puesto)
+
+    instructor_pt_response = requests.get("http://127.0.0.1:5000/ambientes/pts")
+    i = instructor_pt_response.json()
+    print(i)
+
+    novelties_response = requests.get("http://127.0.0.1:5000/novedades")  # Adjust the endpoint as needed
+    novelties = novelties_response.json()
+    print(f"Novelties: {novelties}")
+
+    # List to hold matching workstations with novelty status
+    matching_workstations = []
+
+    # Loop through each classroom that belongs to the instructor
+    for classroom in clss_by_an_instructor:
+        idInstructor_classroom = classroom[0]  # idInstructor from the classroom list
+        idAmbiente = classroom[1]  # idAmbiente from the classroom list
+
+        # Check against each workstation
+        for workstation in i:
+            ws_idAmbiente = workstation[0]  # idAmbiente from the workstation list
+            ws_idPuestoTrabajo = workstation[1]  # idPuestoTrabajo from the workstation list
+
+            if idAmbiente == ws_idAmbiente:
+                # Find the name of the puesto trabajo
+                ws_name = next((x[3] for x in ambiente_puesto if x[2] == ws_idPuestoTrabajo), None)
+                # Check if this puesto trabajo has a novelty
+                has_novelty = any(novelty[1] == ws_idPuestoTrabajo for novelty in novelties)
+                matching_workstations.append((idInstructor_classroom, ws_idPuestoTrabajo, ws_name, has_novelty))
+                print(f"Workstation that belongs to {idInstructor_classroom}: {ws_name} {'(Novelty)' if has_novelty else ''}")
+
+    return render_template("estado_ambientes.html", ambiente_puesto=ambiente_puesto, ws_idPuestoTrabajo=matching_workstations)
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 #LEARNIGN CLASSROOM LIST:

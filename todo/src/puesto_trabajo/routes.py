@@ -1,6 +1,6 @@
 from flask import Flask, jsonify, redirect,request
 from flask import render_template
-from flask_login import login_required
+from flask_login import current_user, login_required
 import requests
 from services.apicnx import Usuario
 
@@ -153,7 +153,9 @@ def DesktopList():
     cadena = desktops.json()
     can=len(cadena)
 
+    # Fetch other necessary data
     response = requests.get("http://127.0.0.1:5000/usua/to2")
+    response.raise_for_status()
     elementos = response.json()
     id=0
     return render_template("pt.html",N=7,cadena=cadena,can=can,elementos=elementos)

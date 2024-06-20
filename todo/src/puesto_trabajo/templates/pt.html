@@ -38,7 +38,7 @@ function Ir1(url, workstationName, elementName) {
 
     <!-- EDILISTAR REGISTROS -->
     {% if N == 0 %}
-    {% if current_user.is_authenticated and current_user.idTipoInstructor == 1 %}
+    {% if current_user.is_authenticated and current_user.idTipoInstructor == 1 or current_user.idTipoInstructor == 3 %}
         <table class="w3-table w3-striped w3-border" border="1">
             <thead>
                 <tr>
@@ -78,7 +78,7 @@ function Ir1(url, workstationName, elementName) {
             </tbody>
         </table>
         <br>
-        <input type="button" class="w3-button w3-round w3-black" value="Regresar" onclick="history.back()">
+        <input type="button" style="float: left; width: 55%;" class="w3-button w3-round w3-green" value="R. NOVEDAD GENERAL" onclick="history.back()"><a style="float: right;" href="{{ url_for('logout') }}"><input type="button" class="w3-button w3-round w3-red" value="CERRAR SESION"></a>
     {% endif %}
 {% endif %}
 

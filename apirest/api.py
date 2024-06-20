@@ -109,15 +109,9 @@ def qrs():
 def ambi_pts():
     sql = "SELECT * FROM ambiente_puesto"
     con = cnxsqlite()
-    todo = con.Ejecutar("./novedades.db", sql)
+    todo = con.Consultar("./novedades.db", sql)
     return json.dumps(todo)
 
-# @app.route("/puestos/trabajructores/<id>o/add/elements/<id>")
-# def sxs(id):
-#     sql = "SELECT * from puesto_elemento where idPuestoTrabajo="+str(id)
-#     con = cnxsqlite()
-#     todo = con.Consultar("./novedades.db", sql)
-#     return json.dumps(todo)
 
 @app.route("/puestos/trabajo/<id>")
 def pepe(id):

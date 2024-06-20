@@ -7,23 +7,26 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='CSS/cards.css') }}">
 
 <div class="grid-container">
-    {% for ambi_pt in ambiente_puesto %}
-    <div class="card">
-      <div class="card_image">
-        <a href="">
-          <img id="images" class="center" src="{{url_for('static',filename='images/')}}" height="160px"
-            width="173px">
-        </a>
-      </div>
-      <div class="card_content">
-        <h2 class="card_title">{{ ambi_pt[3] }}</h2>
+  {% if current_user.is_authenticated and current_user.idTipoInstructor == 2 %}
+    {% for ambi_pt in ws_idPuestoTrabajo %}
+    <div class="card" style="width: 150px; background-color: {{ 'red' if ambi_pt[3] else 'green' }};">
+      <div class="card_content" style="width: 120px; height: auto;">
+        <h2 class="card_title">{{ ambi_pt[2] }}</h2>
       </div>
     </div>
-    {% endfor %} 
+    {% endfor %}
+<br><br><br>
+<input type="button" class="w3-button w3-round w3-black" value="Regresar" onclick="history.back()">
+{% else %}
+{% for ambi_pt in ws_idPuestoTrabajo %}
+    <div class="card" style="width: 150px; background-color: {{ 'red' if ambi_pt[3] else 'green' }};">
+      <div class="card_content" style="width: 120px; height: auto;">
+        <h2 class="card_title">{{ ambi_pt[2] }}</h2>
+      </div>
+    </div>
+    {% endfor %}
 </div>
-
-
-<!-- END HTML -->
-
-
+<br><br><br>
+<a style="float: left;" href="{{ url_for('logout') }}"><input type="button" class="w3-button w3-round w3-red" value="CERRAR SESION"></a><input type="button" style="float: right; width: 55%;" class="w3-button w3-round w3-green" value="REGISTRAR NOVEDAD" onclick="history.back()">
+{% endif %}
 {% endblock %}
