@@ -251,8 +251,6 @@ def ambientesBorra(id):
 
 
 
-
-
 #LEARNING CLASSROOMS - LIST (accountant)
 @ambientes.route("cuentadante", methods=["GET"])
 @login_required

@@ -96,7 +96,19 @@ def createDB():
     );
 
 
+    CREATE TRIGGER delete_workstation
+    AFTER DELETE ON ambiente_puesto
+    FOR EACH ROW
+    BEGIN
+        DELETE FROM ambiente_puesto WHERE idAmbiente = OLD.idAmbiente;
+    END;
 
+    CREATE TRIGGER delete_instructor
+    AFTER DELETE ON instructor_ambientes
+    FOR EACH ROW
+    BEGIN
+        DELETE FROM instructor_ambientes WHERE idInstructor = OLD.idInstructor;
+    END;
     
     CREATE TRIGGER delete_element_trigger
     AFTER DELETE ON elemento

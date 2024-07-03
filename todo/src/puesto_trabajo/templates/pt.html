@@ -160,20 +160,19 @@ function Ir1(url, workstationName, elementName) {
 
         <!-- LISTAR REGISTROS -->
         {% if N == 7 %}
-        <table class="sena__information-card-text w3-striped  w3-centered sena-p100"></table>
+        <table class="sena__information-card-text w3-striped w3-centered sena-p100">
             <td width="50%">
                 <center>
-                    <table class="sena__information-card-text w3-striped  w3-centered sena-p100">
+                    <table class="sena__information-card-text w3-striped w3-centered sena-p100">
                         <tr>
                             <td colspan=2>
                                 <h5 class="sena-sombra w3-green sena-p100 ">CREAR PUESTO DE TRABAJO</h5>
-                                </header>
                             </td>
                         </tr>
                         <tr>
-                            <form name=mio method=POST action="/puesto_trabajo/i" class="row g-3 ">
-                                <td>Nombre del Puesto de Trabajo:</font></td>
-                        <td><input class="sena-fondo" type="text" id="nombrePT" name="nombrePT" required><br></td>
+                            <form name=mio method=POST action="/puesto_trabajo/i" class="row g-3">
+                                <td>Nombre del Puesto de Trabajo:</td>
+                                <td><input class="sena-fondo" type="text" id="nombrePT" name="nombrePT" required><br></td>
                         </tr>
                     </table>
                     <br>
@@ -182,47 +181,61 @@ function Ir1(url, workstationName, elementName) {
             </td>
         </table>
         <br><br><br><br>
-                <table class="instructores">
-                    <h2>Puestos de Trabajo</h2>
-                    <thead>
-                        <tr>
-                            <th id="j" scope="col">Puesto de Trabajo</th>
-                            <th id="j" scope="col">Asignar Elementos</th>
-                            <th id="j" scope="col">Visualizar</th>
-                            <th id="j" scope="col">Editar</th>
-                            <th id="j" scope="col">Delete</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                        {% for x in cadena %}
-                    <td id="k" data-cell="Puesto de Trabajo">{{x[1]}}</td>
-                    <td id="k" data-cell="Asignar Elementos">
-                        <button class="btn w3-green w3-hover-yellow" alt="Asignar" onclick="Ir1('/puesto_trabajo/ptrabajo/add/elements/{{x[0]}}')" title="Asignar"><i
-                                class="fa fa-plus"></i></button>
-                    </td>
-                    <td id="k" data-cell="Visualizar Puesto">
-                        <button class="btn w3-blue w3-hover-yellow" alt="Visualizar"
-                            onclick="Ir1('/puesto_trabajo/pt/{{ x[0] }}')" title="Visualizar"><i
-                                class="fa fa-eye"></i></button>
-                    </td>
-                    <td>
-                        <button class="btn w3-green w3-hover-yellow" alt="Editar"
-                            onclick="Ir1('/puesto_trabajo/e/{{x[0]}}')" title="Editar"><i
-                                class="fa fa-pencil"></i></button>
-                    </td>
-                    <td>
-                        <button class="btn w3-red w3-hover-yellow"
-                            onclick='Confirmar("Desea Borrar el registro?","/puesto_trabajo/d/{{x[0]}}")'
-                            title="Borrar"><i class="fa fa-trash"></i></button>
-                    </td>
+        <table class="instructores">
+            <h2>Puestos de Trabajo</h2>
+            <thead>
+                <tr>
+                    <th id="j" scope="col">Puesto de Trabajo</th>
+                    <th id="j" scope="col">Asignar Elementos</th>
+                    <th id="j" scope="col">Visualizar</th>
+                    <th id="j" scope="col">Editar</th>
+                    <th id="j" scope="col">Delete</th>
                 </tr>
-        {% endfor %}
-                    </tbody>
+            </thead>
+            <tbody>
+                {% if current_user.is_authenticated and current_user.idTipoInstructor == 1 %}
+                    {% for k in ws_idPuestoTrabajo %}
+                        <tr>
+                            <td id="k" data-cell="Puesto de Trabajo">{{ k[2] }}</td>
+                            <td id="k" data-cell="Asignar Elementos">
+                                <button class="btn w3-green w3-hover-yellow" alt="Asignar" onclick="Ir1('/puesto_trabajo/ptrabajo/add/elements/{{ k[1] }}')" title="Asignar"><i class="fa fa-plus"></i></button>
+                            </td>
+                            <td id="k" data-cell="Visualizar Puesto">
+                                <button class="btn w3-blue w3-hover-yellow" alt="Visualizar" onclick="Ir1('/puesto_trabajo/pt/{{ k[1] }}')" title="Visualizar"><i class="fa fa-eye"></i></button>
+                            </td>
+                            <td>
+                                <button class="btn w3-green w3-hover-yellow" alt="Editar" onclick="Ir1('/puesto_trabajo/e/{{ k[1] }}')" title="Editar"><i class="fa fa-pencil"></i></button>
+                            </td>
+                            <td>
+                                <button class="btn w3-red w3-hover-yellow" onclick='Confirmar("Desea Borrar el registro?", "/puesto_trabajo/d/{{ k[1] }}")' title="Borrar"><i class="fa fa-trash"></i></button>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                {% else %}
+                    {% for x in cadena %}
+                        <tr>
+                            <td id="k" data-cell="Puesto de Trabajo">{{ x[1] }}</td>
+                            <td id="k" data-cell="Asignar Elementos">
+                                <button class="btn w3-green w3-hover-yellow" alt="Asignar" onclick="Ir1('/puesto_trabajo/ptrabajo/add/elements/{{ x[0] }}')" title="Asignar"><i class="fa fa-plus"></i></button>
+                            </td>
+                            <td id="k" data-cell="Visualizar Puesto">
+                                <button class="btn w3-blue w3-hover-yellow" alt="Visualizar" onclick="Ir1('/puesto_trabajo/pt/{{ x[0] }}')" title="Visualizar"><i class="fa fa-eye"></i></button>
+                            </td>
+                            <td>
+                                <button class="btn w3-green w3-hover-yellow" alt="Editar" onclick="Ir1('/puesto_trabajo/e/{{ x[0] }}')" title="Editar"><i class="fa fa-pencil"></i></button>
+                            </td>
+                            <td>
+                                <button class="btn w3-red w3-hover-yellow" onclick='Confirmar("Desea Borrar el registro?", "/puesto_trabajo/d/{{ x[0] }}")' title="Borrar"><i class="fa fa-trash"></i></button>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                {% endif %}
+            </tbody>
         </table>
         <br><br><br><br>
         <button class="w3-button w3-round w3-black" onclick="history.back()">Regresar</button>
-        {% endif %}
+    {% endif %}
+    
 
         {% if N == 8 %}
         <br>
