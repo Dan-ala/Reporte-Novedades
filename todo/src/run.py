@@ -1,12 +1,11 @@
 # This app refer to the app folder
 #     ⇩
-from flask import flash, redirect, request, render_template, session, url_for
+from flask import flash, redirect, request, render_template, url_for
 from app import create_app
-from services.apicnx import Usuario, UsuarioLogin
-from flask_mail import Mail, Message
+from services.apicnx import UsuarioLogin
 import requests
 
-from flask_login import LoginManager, login_user, login_required, logout_user
+from flask_login import login_user, login_required, logout_user
 
 # This app refer to the flask app
 # ⇩

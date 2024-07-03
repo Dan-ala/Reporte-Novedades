@@ -72,7 +72,7 @@ def new_novelty():
         try:
             msg = Message(
                 "NUEVA NOVEDAD",
-                sender="danielala2006@outlook.es",
+                sender="davisanquevedovan@gmail.com",
                 recipients=[instructor_email]
             )
             msg.body = f"EN EL AMBIENTE: {classroom_name} \n PUESTO DE TRABAJO: {nombrePT} \n ELEMENTO: {nombreElemento} \n DESCRIPCION: \n {descripcion_novedad}"

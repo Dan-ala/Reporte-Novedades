@@ -1,6 +1,5 @@
 # imports
-from functools import wraps
-from flask import Flask, flash, redirect, request, render_template, session, url_for
+from flask import Flask
 from flask_cors import CORS
 from flask_login import LoginManager
 
@@ -13,9 +12,9 @@ from instructores.routes import instructores_model
 from elementos.routes import elementos
 import requests
 
-from services.apicnx import Usuario, UsuarioLogin
+from services.apicnx import UsuarioLogin
 
-from flask_mail import Mail, Message
+from flask_mail import Mail
 import requests
 
 mail = Mail()

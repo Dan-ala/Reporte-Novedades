@@ -25,7 +25,6 @@ def learning_classroom(id=0):
 
 # LEARNING CLASSROOM STATUS
 @ambientes.route("estado", methods=["GET"])
-@login_required
 def test():
     idInstructor = current_user.idInstructor  # Assuming this attribute exists on your User class
     instructors_by_idAmbiente_response = requests.get(f"http://127.0.0.1:5000/instructores/ambientes/{idInstructor}")
