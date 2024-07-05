@@ -33,15 +33,15 @@ def test():
 
     ambientes_response = requests.get("http://127.0.0.1:5000/ambientes/add/pts")
     ambiente_puesto = ambientes_response.json()
-    print(ambiente_puesto)
+    print(f"Table ambiente_puesto: {ambiente_puesto}")
 
     instructor_pt_response = requests.get("http://127.0.0.1:5000/ambientes/pts")
     i = instructor_pt_response.json()
-    print(i)
+    print(f"Workstations: {i}")
 
     novelties_response = requests.get("http://127.0.0.1:5000/novedades")  # Adjust the endpoint as needed
     novelties = novelties_response.json()
-    print(f"Novelties: {novelties}")
+    # print(f"Novelties: {novelties}")
 
     # List to hold matching workstations with novelty status
     matching_workstations = []

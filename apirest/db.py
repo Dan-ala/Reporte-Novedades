@@ -25,10 +25,12 @@ def createDB():
     );
 
     INSERT INTO instructor (idTipoInstructor, cedula, emailInstructor)
-    VALUES (3, 1025141238, "davids_quevedo@soy.sena.edu.co"),
-    (3, 1003673047, "jstunjano7@soy.sena.edu.co"),
-    (3, 1021396143, "dsalarcon@soy.sena.edu.co");
-
+    VALUES (1, 123, "davisanquevedovan@gmail.com"),
+           (1, 456, "danielala14fi@gmail.com"),
+           (2, 1034567890, "instructor1@example.com"),
+           (2, 1045678901, "instructor2@example.com"),
+           (3, 1025141238, "davids_quevedo@soy.sena.edu.co"),
+           (3, 1021396143, "dsalarcon3@soy.sena.edu.co");
 
     CREATE TABLE tipo_elemento (
         idTipoElemento INTEGER PRIMARY KEY,
@@ -47,12 +49,20 @@ def createDB():
         FOREIGN KEY(idTipoElemento) REFERENCES tipo_elemento(idTipoElemento)
     );
 
+    INSERT INTO elemento (idTipoElemento, nombreElemento, barcode)
+    VALUES (1, "Monitor", "123456"),
+           (2, "Mouse", "789012"),
+           (1, "Keyboard", "345678");
 
     CREATE TABLE puesto_trabajo (
         idPuestoTrabajo INTEGER PRIMARY KEY,
         nombrePT TEXT NOT NULL
     );
 
+    INSERT INTO puesto_trabajo (nombrePT)
+    VALUES ("Desk1"),
+           ("Desk2"),
+           ("Desk3");
 
     CREATE TABLE puesto_elemento (
         idPuestoTrabajo INTEGER,
@@ -62,28 +72,43 @@ def createDB():
         PRIMARY KEY (idPuestoTrabajo, idElemento)
     );
 
+    INSERT INTO puesto_elemento (idPuestoTrabajo, idElemento)
+    VALUES (1, 1),
+           (1, 2),
+           (2, 3);
 
     CREATE TABLE ambiente (
         idAmbiente INTEGER PRIMARY KEY,
         nombreAmbiente TEXT NOT NULL
     );
 
+    INSERT INTO ambiente (nombreAmbiente)
+    VALUES ("Office1"),
+           ("Office2");
+
     CREATE TABLE ambiente_puesto (
-    idAmbiente INTEGER,
-    idPuestoTrabajo INTEGER,
-    FOREIGN KEY(idAmbiente) REFERENCES ambiente(idAmbiente),
-    FOREIGN KEY(idPuestoTrabajo) REFERENCES puesto_trabajo(idPuestoTrabajo),
-    PRIMARY KEY (idAmbiente, idPuestoTrabajo)
+        idAmbiente INTEGER,
+        idPuestoTrabajo INTEGER,
+        FOREIGN KEY(idAmbiente) REFERENCES ambiente(idAmbiente),
+        FOREIGN KEY(idPuestoTrabajo) REFERENCES puesto_trabajo(idPuestoTrabajo),
+        PRIMARY KEY (idAmbiente, idPuestoTrabajo)
     );
+
+    INSERT INTO ambiente_puesto (idAmbiente, idPuestoTrabajo)
+    VALUES (1, 1),
+           (1, 2),
+           (2, 3);
 
     CREATE TABLE instructor_ambientes (
-    idInstructor INTEGER,
-    idAmbiente INTEGER,
-    FOREIGN KEY(idInstructor) REFERENCES instructor(idInstructor),
-    FOREIGN KEY(idAmbiente) REFERENCES ambiente(idAmbiente),
-    PRIMARY KEY (idInstructor, idAmbiente)
+        idInstructor INTEGER,
+        idAmbiente INTEGER,
+        FOREIGN KEY(idInstructor) REFERENCES instructor(idInstructor),
+        FOREIGN KEY(idAmbiente) REFERENCES ambiente(idAmbiente),
+        PRIMARY KEY (idInstructor, idAmbiente)
     );
 
+    INSERT INTO instructor_ambientes (idInstructor, idAmbiente)
+    SELECT idInstructor, 1 FROM instructor WHERE idTipoInstructor = 1;
 
     CREATE TABLE novedades (
         idNovedad INTEGER PRIMARY KEY,
@@ -95,33 +120,23 @@ def createDB():
         FOREIGN KEY(idElemento) REFERENCES elemento(idElemento)
     );
 
+    INSERT INTO novedades (idPuestoTrabajo, idElemento, descripcion_novedad)
+    VALUES (1, 1, "Broken screen"),
+           (2, 3, "Missing keys");
 
-    CREATE TRIGGER delete_workstation
-    AFTER DELETE ON ambiente_puesto
-    FOR EACH ROW
-    BEGIN
-        DELETE FROM ambiente_puesto WHERE idAmbiente = OLD.idAmbiente;
-    END;
-
-    CREATE TRIGGER delete_instructor
-    AFTER DELETE ON instructor_ambientes
-    FOR EACH ROW
-    BEGIN
-        DELETE FROM instructor_ambientes WHERE idInstructor = OLD.idInstructor;
-    END;
-    
-    CREATE TRIGGER delete_element_trigger
-    AFTER DELETE ON elemento
-    FOR EACH ROW
-    BEGIN
-        DELETE FROM puesto_elemento WHERE idElemento = OLD.idElemento;
-    END;
-
-    CREATE TRIGGER delete_workstation_trigger
+    CREATE TRIGGER delete_puesto_elemento
     AFTER DELETE ON puesto_trabajo
     FOR EACH ROW
     BEGIN
         DELETE FROM puesto_elemento WHERE idPuestoTrabajo = OLD.idPuestoTrabajo;
+    END;
+
+    
+    CREATE TRIGGER delete_ambiente_puesto
+    AFTER DELETE ON puesto_trabajo
+    FOR EACH ROW
+    BEGIN
+        DELETE FROM ambiente_puesto WHERE idPuestoTrabajo = OLD.idPuestoTrabajo;
     END;
     """
     

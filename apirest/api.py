@@ -10,18 +10,6 @@ import pytz
 
 app=Flask(__name__)
 
-#BELONGS?
-@app.route("/check-in")
-def x():    
-    sql = """
-    SELECT ambi.idPuestoTrabajo, pt.nombrePT 
-    FROM puesto_trabajo pt 
-    INNER JOIN ambiente ambi ON pt.idPuestoTrabajo = ambi.idPuestoTrabajo
-    """
-    con = cnxsqlite()
-    todo = con.Ejecutar("./novedades.db", sql)
-    return json.dumps(todo)
-
 #LOGIN
 @app.route("/instruc")
 def login():
@@ -421,6 +409,9 @@ def DeleteWorkstation(id):
     con = cnxsqlite()
     todo = con.Ejecutar("./novedades.db", sql)
     return "GREAT"
+
+
+
 
 if __name__=='__main__':
     app.run(debug=True,port=configura['PUERTOREST'],host='0.0.0.0')

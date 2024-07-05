@@ -7,7 +7,7 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='CSS/cards.css') }}">
 
 <div class="grid-container">
-  {% if current_user.is_authenticated and current_user.idTipoInstructor == 2 %}
+  {% if current_user.is_authenticated and current_user.idTipoInstructor == 1 %}
     {% for ambi_pt in ws_idPuestoTrabajo %}
     <div class="card" style="width: 150px; background-color: {{ 'red' if ambi_pt[3] else 'green' }};">
       <div class="card_content" style="width: 120px; height: auto;">
