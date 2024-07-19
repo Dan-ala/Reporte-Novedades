@@ -160,6 +160,9 @@ function Ir1(url, workstationName, elementName) {
 
         <!-- LISTAR REGISTROS -->
         {% if N == 7 %}
+        {% if current_user.is_authenticated and current_user.idTipoInstructor == 1 %}
+        
+        {% else %}
         <table class="sena__information-card-text w3-striped w3-centered sena-p100">
             <td width="50%">
                 <center>
@@ -180,7 +183,8 @@ function Ir1(url, workstationName, elementName) {
                     </form>
             </td>
         </table>
-        <br><br><br><br>
+        {% endif %}
+        <br><br>
         <table class="instructores">
             <h2>Puestos de Trabajo</h2>
             <thead>

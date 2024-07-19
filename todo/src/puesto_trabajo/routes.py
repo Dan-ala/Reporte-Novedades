@@ -163,7 +163,7 @@ def DesktopList():
 
     print (f"Current user: {idTipoInstructor}")
 
-    if idTipoInstructor == 1:  # If the user is an accountant
+    if idTipoInstructor == 1:  # If the user is an accountant(1)
         instructors_by_idAmbiente_response = requests.get(f"http://127.0.0.1:5000/instructores/ambientes/{idInstructor}")
         clss_by_an_instructor = instructors_by_idAmbiente_response.json()
         print(f"Learning classrooms that belong to an accountant: \n{clss_by_an_instructor}")
@@ -178,7 +178,8 @@ def DesktopList():
 
         novelties_response = requests.get("http://127.0.0.1:5000/novedades")  # Adjust the endpoint as needed
         novelties = novelties_response.json()
-        print(f"Novelties: {novelties}")
+        # print(f"Novelties: {novelties}")
+
 
         # List to hold matching workstations with novelty status
         matching_workstations = []

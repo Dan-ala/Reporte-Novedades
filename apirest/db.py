@@ -107,8 +107,6 @@ def createDB():
         PRIMARY KEY (idInstructor, idAmbiente)
     );
 
-    INSERT INTO instructor_ambientes (idInstructor, idAmbiente)
-    SELECT idInstructor, 1 FROM instructor WHERE idTipoInstructor = 1;
 
     CREATE TABLE novedades (
         idNovedad INTEGER PRIMARY KEY,
@@ -120,15 +118,20 @@ def createDB():
         FOREIGN KEY(idElemento) REFERENCES elemento(idElemento)
     );
 
-    INSERT INTO novedades (idPuestoTrabajo, idElemento, descripcion_novedad)
-    VALUES (1, 1, "Broken screen"),
-           (2, 3, "Missing keys");
 
     CREATE TRIGGER delete_puesto_elemento
     AFTER DELETE ON puesto_trabajo
     FOR EACH ROW
     BEGIN
         DELETE FROM puesto_elemento WHERE idPuestoTrabajo = OLD.idPuestoTrabajo;
+    END;
+
+
+    CREATE TRIGGER delete_inst_ambientes
+    AFTER DELETE ON instructor
+    FOR EACH ROW
+    BEGIN
+        DELETE FROM instructor_ambientes WHERE idInstructor = OLD.idInstructor;
     END;
 
     

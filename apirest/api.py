@@ -92,7 +92,55 @@ def qrs():
     """
     con = cnxsqlite()
     todo = con.Consultar("./novedades.db", sql)
-    return json.dumps(todo)   
+    return json.dumps(todo)  
+
+
+#test
+@app.route("/papa/<id>")
+def papa(id):
+    sql = """
+    SELECT a.nombreAmbiente
+        FROM ambiente_puesto ap
+        INNER JOIN ambiente a ON ap.idAmbiente = a.idAmbiente
+        WHERE ap.idPuestoTrabajo = 
+    """+str(id)
+    con = cnxsqlite()
+    todo = con.Consultar("./novedades.db", sql)
+    return json.dumps(todo)
+
+@app.route("/reporte/<id>")
+def reporte1(id):
+    sql = """
+    SELECT idAmbiente
+    FROM ambiente_puesto
+    WHERE idPuestoTrabajo = 
+    """+str(id)
+    con = cnxsqlite()
+    todo = con.Consultar("./novedades.db", sql)
+    return json.dumps(todo) 
+
+@app.route("/reporte2/<id>")
+def report(id):
+    sql = """
+    SELECT idInstructor
+    FROM instructor_ambientes
+    WHERE idAmbiente =
+    """+str(id)
+    con = cnxsqlite()
+    todo = con.Consultar("./novedades.db", sql)
+    return json.dumps(todo)
+
+@app.route("/reporte3/<id>") 
+def reports(id):
+    sql = """
+    SELECT emailInstructor 
+    FROM instructor 
+    WHERE idInstructor =
+    """+str(id)+" AND idTipoInstructor = 1"
+    con = cnxsqlite()
+    todo = con.Consultar("./novedades.db", sql)
+    return json.dumps(todo)
+
 
 @app.route("/ambientes/pts")
 def ambi_pts():
