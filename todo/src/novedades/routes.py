@@ -131,7 +131,7 @@ def new_novelty():
                 <h1>"Señor usuario recuerde que los servicios del SENA son gratuitos"<h1>
                 
                 <h3>
-                    <img src="todo/src/app/static/images/CGMLTI.png" alt="CGMLTI">
+                    <img src="todo/src/app/static/images/CGMLTI.png" alt="CGMLTI" width="88px">
                     <b>davisanquevedovan@gmail.com</b>
                     PBX:+(57) 601 5461500 Ext:17003
                     <b>Calle 52 No 13-65</b>
@@ -174,6 +174,7 @@ def NoveltyList():
     page = request.args.get('page', 1, type=int)
     per_page = request.args.get('per_page', 5, type=int)
     
+    # Get the data from the endpoints
     novedades = requests.get("http://127.0.0.1:5000/novedades").json()
     id_puesto_trabajo = requests.get("http://127.0.0.1:5000/puestos/trabajo").json()
     id_elemento = requests.get("http://127.0.0.1:5000/usua/to").json()
@@ -181,66 +182,62 @@ def NoveltyList():
     idPT_dict = {puesto[0]: puesto[1] for puesto in id_puesto_trabajo}
     idElemento_dict = {elemento[0]: elemento[2] for elemento in id_elemento}
 
-
     idInstructor = current_user.idInstructor
     idTipoInstructor = current_user.idTipoInstructor
     
+    matching_workstations = []
+
     if idTipoInstructor == 1:
         instructors_by_idAmbiente_response = requests.get(f"http://127.0.0.1:5000/instructores/ambientes/{idInstructor}")
         clss_by_an_instructor = instructors_by_idAmbiente_response.json()
-        print(f"Learning classrooms that belong to an accountant: \n{clss_by_an_instructor}") 
 
         ambientes_response = requests.get("http://127.0.0.1:5000/ambientes/add/pts")
         ambiente_puesto = ambientes_response.json()
-        print(f"Ambiente Puesto: {ambiente_puesto}")
 
         instructor_pt_response = requests.get("http://127.0.0.1:5000/ambientes/pts")
         i = instructor_pt_response.json()
-        print(f"Initial Workstations List (i): {i}")
 
-        novelties_response = requests.get("http://127.0.0.1:5000/novedades")  # Adjust the endpoint as needed
-        novelties = novelties_response.json()
-        print(f"Novelties: {novelties}")           
-
-        # List to hold matching workstations with novelty status
-        matching_workstations = []
-
-        # Loop through each classroom that belongs to the instructor
         for classroom in clss_by_an_instructor:
-            idInstructor_classroom = classroom[0]  # idInstructor from the classroom list
-            idAmbiente = classroom[1]  # idAmbiente from the classroom list
+            idInstructor_classroom = classroom[0]
+            idAmbiente = classroom[1]
 
-            # Check against each workstation
             for workstation in i:
-                ws_idAmbiente = workstation[0]  # idAmbiente from the workstation list
-                ws_idPuestoTrabajo = workstation[1]  # idPuestoTrabajo from the workstation list
+                ws_idAmbiente = workstation[0]
+                ws_idPuestoTrabajo = workstation[1]
 
                 if idAmbiente == ws_idAmbiente:
-                    # Find the name of the puesto trabajo
                     ws_name = next((x[3] for x in ambiente_puesto if x[2] == ws_idPuestoTrabajo), None)
-                    # Check if this puesto trabajo has a novelty
-                    has_novelty = any(novelty[1] == ws_idPuestoTrabajo for novelty in novelties)
-                    matching_workstations.append((idInstructor_classroom, ws_idPuestoTrabajo, ws_name, has_novelty))
-                    print(f"Workstation that belongs to {idInstructor_classroom}: {ws_name} {'(Novelty)' if has_novelty else ''}")                   
 
+                    for novelty in novedades:
+                        if novelty[1] == ws_idPuestoTrabajo:
+                            novelty_elements = [elem[0] for elem in id_elemento if elem[0] == novelty[2]]
+                            novelty_description = novelty[3]
+                            novelty_date = novelty[4]
+                            matching_workstations.append((ws_name, novelty_elements, novelty_description, novelty_date))
 
+    elif idTipoInstructor == 3:
+        for novelty in novedades:
+            idPT = novelty[1]
+            idElemento = novelty[2]
+            description = novelty[3]
+            date = novelty[4]
+            matching_workstations.append((idPT, idElemento, description, date))
 
-
-    # Calculate start and end indices for pagination
     start_idx = (page - 1) * per_page
     end_idx = start_idx + per_page
-    paginated_novedades = novedades[start_idx:end_idx]
+    paginated_novedades = matching_workstations[start_idx:end_idx]
 
-    # Check if the request is an AJAX request
     if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
         return jsonify({
             'cadena': paginated_novedades,
             'idPT_dict': idPT_dict,
             'idElemento_dict': idElemento_dict,
-            'can': len(novedades)
+            'can': len(matching_workstations)
         })
     
-    return render_template("novedades.html", N=0, cadena=paginated_novedades, idPT_dict=idPT_dict, idElemento_dict=idElemento_dict, can=len(novedades), current_page=page, rows_per_page=per_page)
+    return render_template("novedades.html", N=0, cadena=paginated_novedades, idPT_dict=idPT_dict, idElemento_dict=idElemento_dict, can=len(matching_workstations), current_page=page, rows_per_page=per_page)
+
+
 
 
 #REGISTRO DE NOVEDAD

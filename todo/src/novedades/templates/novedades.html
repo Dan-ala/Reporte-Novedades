@@ -32,34 +32,47 @@
 {% block content %}
 
 
-  {% if N == 0 %}
-  <!-- EDILISTAR REGISTROS -->
-  <table id="myTable" class="w3-table w3-striped w3-border" border="1">   
-      <thead>
-          <tr>
-              <th scope="col">Puesto de Trabajo</th>
-              <th scope="col">Elemento</th>
-              <th scope="col">Descripción</th>
-              <th scope="col">Fecha de la novedad</th>
-          </tr>
-      </thead>
-      <tbody>
+{% if N == 0 %}
+<!-- EDILISTAR REGISTROS -->
+<table id="myTable" class="w3-table w3-striped w3-border" border="1">   
+    <thead>
+        <tr>
+            <th scope="col">Puesto de Trabajo</th>
+            <th scope="col">Elemento</th>
+            <th scope="col">Descripción</th>
+            <th scope="col">Fecha de la novedad</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% if current_user.is_authenticated and current_user.idTipoInstructor == 1 %}
         {% for x in cadena %}
         <tr>
+            <td>{{ x[0] }}</td> <!-- Puesto de Trabajo Name -->
             <td>
-                {{ idPT_dict.get(x[1], '') }}
+                {% for elem in x[1] %}
+                    {{ idElemento_dict.get(elem, '') }}<br>
+                {% endfor %}
             </td>
-            <td>
-                {{ idElemento_dict.get(x[2], '') }}
-            </td>
-            <td>{{ x[3] }}</td>
-            <td>{{ x[4] }}</td>
+            <td>{{ x[2] }}</td> <!-- Descripción de la novedad -->
+            <td>{{ x[3] }}</td> <!-- Fecha de la novedad -->
         </tr>
         {% endfor %}
+
+        {% elif current_user.is_authenticated and current_user.idTipoInstructor == 3 %}
+        {% for x in cadena %}
+        <tr>
+            <td>{{ idPT_dict.get(x[0], '') }}</td> <!-- Puesto de Trabajo Name -->
+            <td>{{ idElemento_dict.get(x[1], '') }}</td> <!-- Elemento -->
+            <td>{{ x[2] }}</td> <!-- Descripción -->
+            <td>{{ x[3] }}</td> <!-- Fecha -->
+        </tr>
+        {% endfor %}
+        {% endif %}
     </tbody>   
-  </table>
-  <br>
-  <div id="pagination"></div>
+</table>
+<br>
+<div id="pagination"></div>
+<br>
 <!-- BUTTONS -->
 <button id="prevButton" class="w3-button w3-round w3-black">Anterior</button>
 <button id="nextButton" class="w3-button w3-round w3-green">Siguiente</button>
@@ -69,6 +82,8 @@
 
 <script src="{{ url_for('static', filename='js/pagination.js') }}"></script>
 {% endif %}
+
+
 
 {% if N == '1' %}
 <div class="createANovelty">

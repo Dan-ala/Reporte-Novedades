@@ -143,3 +143,26 @@ footer {
 .duru option{
   margin-left: 30em;
 }
+
+
+
+
+
+
+
+.pagination-link {
+  margin: 0 5px; /* Add margin to space out the links */
+  padding: 5px 10px; /* Add padding for better clickable area */
+  text-decoration: none; /* Remove underline */
+  color: #000; /* Text color */
+}
+
+.pagination-link.active {
+  font-weight: bold; /* Make active page bold */
+  background-color: #ddd; /* Light background for active page */
+}
+
+.pagination-container {
+  text-align: center; /* Center align the pagination container */
+  margin-top: 20px; /* Add top margin */
+}

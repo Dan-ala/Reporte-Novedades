@@ -3,19 +3,30 @@ let currentPage = 1;
 
 // Function to fetch data from the server
 async function fetchData(page) {
-    const response = await fetch(`/novedades?page=${page}&per_page=${rowsPerPage}`, {
-        headers: {
-            'X-Requested-With': 'XMLHttpRequest'
+    try {
+        const response = await fetch(`/novedades?page=${page}&per_page=${rowsPerPage}`, {
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        });
+        if (!response.ok) {
+            throw new Error('Network response was not ok.');
         }
-    });
-    const data = await response.json();
-    return data;
+        const data = await response.json();
+        console.log('Fetched data:', data); // Log fetched data
+        return data;
+    } catch (error) {
+        console.error('Fetching data failed:', error);
+        // Handle error, show a message to the user, etc.
+    }
 }
 
 // Function to display table based on current page
 async function displayTable(page) {
     if (page < 1) return; // Prevent going to a negative page
     const data = await fetchData(page);
+    if (!data) return;
+
     const tableBody = document.querySelector("#myTable tbody");
 
     // Clear existing table rows
@@ -24,11 +35,20 @@ async function displayTable(page) {
     // Populate table with data
     data.cadena.forEach(item => {
         const row = document.createElement("tr");
+        let elementosHTML = '';
+
+        // Handle different data formats
+        if (Array.isArray(item[1])) {
+            elementosHTML = item[1].map(elem => `${data.idElemento_dict[elem]}`).join('<br>');
+        } else {
+            elementosHTML = data.idElemento_dict[item[1]];
+        }
+
         row.innerHTML = `
-            <td>${data.idPT_dict[item[1]] || ''}</td>
-            <td>${data.idElemento_dict[item[2]] || ''}</td>
+            <td>${data.idPT_dict[item[0]] || item[0]}</td>
+            <td>${elementosHTML}</td>
+            <td>${item[2]}</td>
             <td>${item[3]}</td>
-            <td>${item[4]}</td>
         `;
         tableBody.appendChild(row);
     });
@@ -52,35 +72,33 @@ function updatePagination(currentPage, totalItems) {
     // Clear existing pagination links
     paginationContainer.innerHTML = "";
 
-    // Add pagination links
     for (let i = 1; i <= pageCount; i++) {
         const pageLink = document.createElement("a");
         pageLink.href = "#";
-        pageLink.innerText = i;
-        pageLink.onclick = function (event) {
+        pageLink.textContent = i;
+        pageLink.classList.add("pagination-link");
+        if (i === currentPage) {
+            pageLink.classList.add("active");
+        }
+        pageLink.addEventListener("click", (event) => {
             event.preventDefault();
             displayTable(i);
-        };
-        if (i === currentPage) {
-            pageLink.style.fontWeight = "bold";
-        }
+        });
         paginationContainer.appendChild(pageLink);
-        paginationContainer.appendChild(document.createTextNode(" "));
     }
 }
 
-// Attach event listeners to the buttons
-document.getElementById('prevButton').addEventListener('click', () => {
+// Event listeners for pagination buttons
+document.getElementById("prevButton").addEventListener("click", () => {
     if (currentPage > 1) {
         displayTable(currentPage - 1);
     }
 });
-
-document.getElementById('nextButton').addEventListener('click', () => {
+document.getElementById("nextButton").addEventListener("click", () => {
     displayTable(currentPage + 1);
 });
 
 // Initial display
-document.addEventListener("DOMContentLoaded", function() {
-    displayTable(currentPage);
+document.addEventListener('DOMContentLoaded', () => {
+    displayTable(1);
 });
