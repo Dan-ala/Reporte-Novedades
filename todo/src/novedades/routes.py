@@ -16,6 +16,7 @@ novedades = Blueprint('novedades', __name__, url_prefix='/novedades',
                       template_folder='templates')
 
 
+
 #NEW NOVELTY:
 @novedades.route("i", methods=["GET", "POST"])
 def new_novelty():
@@ -31,6 +32,8 @@ def new_novelty():
     }
     print("Data to insert:", datos)
     nove.Inserte(datos)
+
+    msgitos = "Novedad General registrada"
 
     # Fetching data from APIs
     instructors = requests.get("http://127.0.0.1:5000/instructores").json()
@@ -158,6 +161,33 @@ def new_novelty():
 
 
 
+
+#GENERAL NOVELTY
+@novedades.route("i2", methods=["GET","POST"])
+def gn():
+    idAmbiente = str(request.form.get('idAmbiente'))
+    descripcion_novedad = request.form.get('descripcion_novedad')
+
+    nove = Usuario("http://127.0.0.1:5000/novedades_generales")
+    datos = {
+        "idAmbiente": idAmbiente,
+        "descripcion_novedad": descripcion_novedad
+    }
+    print("Data to insert:", datos)
+    nove.Inserte(datos)
+    msgitos = "Novedad General registrada"
+    return render_template("alertas.html", msgito=msgitos, idAmbiente=idAmbiente)
+
+
+
+
+
+
+
+
+
+
+
 #NOVEDADES
 @novedades.route("/0", methods=["GET","POST"])
 def index4():
@@ -258,7 +288,27 @@ def registrar_2novedad(workstation_id, element_id):
     except requests.exceptions.RequestException as e:
         print(f"Error fetching data from API: {e}")
         return "Error: Failed to retrieve data from the endpoint"
-    
+
+
+
+# REGISTRO NOVEDAD GENERAL
+@novedades.route("/registro/general/<idAmbiente>", methods=["GET"])
+def NovedadGeneral(idAmbiente):
+    try:
+        # Default to 'Unknown Classroom' if no classroom_name is provided
+        classroom_name = request.args.get('classroom_name', 'Unknown Classroom')
+        print(f"Received ID Ambiente: {idAmbiente}")
+        print(f"Classroom Name: {classroom_name}")
+
+        # Fetching data and rendering template with the classroom_name
+        return render_template("novedades.html", N=2, classroom_name=classroom_name, idAmbiente=idAmbiente)
+    except requests.exceptions.RequestException as e:
+        print(f"Error fetching data from API: {e}")
+        return "Error: Failed to retrieve data from the endpoint"
+
+
+
+
 
 #DELETE ALL RECORDS FROM NOVELTUES TABLE
 @novedades.route("/niveles/d", methods = ["GET"])

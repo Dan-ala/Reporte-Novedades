@@ -24,52 +24,50 @@ def learning_classroom(id=0):
 
 
 # LEARNING CLASSROOM STATUS
-@ambientes.route("estado", methods=["GET"])
-def test():
-    idInstructor = current_user.idInstructor  # Assuming this attribute exists on your User class
-    instructors_by_idAmbiente_response = requests.get(f"http://127.0.0.1:5000/instructores/ambientes/{idInstructor}")
-    clss_by_an_instructor = instructors_by_idAmbiente_response.json()
-    print(f"Learning classrooms that belong to an accountant: \n{clss_by_an_instructor}")
+@ambientes.route("estado/<idAmbiente>", methods=["GET"])
+def test(idAmbiente):
+    try:
+        # Fetch data for the given idAmbiente
+        ambiente_puesto_id = requests.get(f"http://127.0.0.1:5000/ambientes/pts/{idAmbiente}")
+        ambiente_puesto_id.raise_for_status()
+        d = ambiente_puesto_id.json()
+        print(f"ambiente puesto_id: {d}")
 
-    ambientes_response = requests.get("http://127.0.0.1:5000/ambientes/add/pts")
-    ambiente_puesto = ambientes_response.json()
-    print(f"Table ambiente_puesto: {ambiente_puesto}")
+        ambientes_response = requests.get("http://127.0.0.1:5000/ambientes/add/pts")
+        ambientes_response.raise_for_status()
+        ambiente_puesto = ambientes_response.json()
 
-    instructor_pt_response = requests.get("http://127.0.0.1:5000/ambientes/pts")
-    i = instructor_pt_response.json()
-    print(f"Workstations: {i}")
+        ambi = requests.get("http://127.0.0.1:5000/ambientes").json()
 
-    novelties_response = requests.get("http://127.0.0.1:5000/novedades")  # Adjust the endpoint as needed
-    novelties = novelties_response.json()
-    # print(f"Novelties: {novelties}")
+        cadena_dict = {item[0]: item[1] for item in ambi}
 
-    # List to hold matching workstations with novelty status
-    matching_workstations = []
+        novelties_response = requests.get("http://127.0.0.1:5000/novedades")
+        novelties_response.raise_for_status()
+        novelties = novelties_response.json()
 
-    # Loop through each classroom that belongs to the instructor
-    for classroom in clss_by_an_instructor:
-        idInstructor_classroom = classroom[0]  # idInstructor from the classroom list
-        idAmbiente = classroom[1]  # idAmbiente from the classroom list
+        matching_workstations = []
 
-        # Check against each workstation
-        for workstation in i:
-            ws_idAmbiente = workstation[0]  # idAmbiente from the workstation list
-            ws_idPuestoTrabajo = workstation[1]  # idPuestoTrabajo from the workstation list
+        for workstation in d:
+            ws_idPuestoTrabajo = workstation[1]
+            ws_name = next((x[3] for x in ambiente_puesto if x[2] == ws_idPuestoTrabajo), None)
+            has_novelty = any(novelty[1] == ws_idPuestoTrabajo for novelty in novelties)
+            matching_workstations.append((ws_idPuestoTrabajo, ws_name, has_novelty))
+            print(f"Workstation that belongs to {ws_name} {'(Novelty)' if has_novelty else ''}")
 
-            if idAmbiente == ws_idAmbiente:
-                # Find the name of the puesto trabajo
-                ws_name = next((x[3] for x in ambiente_puesto if x[2] == ws_idPuestoTrabajo), None)
-                # Check if this puesto trabajo has a novelty
-                has_novelty = any(novelty[1] == ws_idPuestoTrabajo for novelty in novelties)
-                matching_workstations.append((idInstructor_classroom, ws_idPuestoTrabajo, ws_name, has_novelty))
-                print(f"Workstation that belongs to {idInstructor_classroom}: {ws_name} {'(Novelty)' if has_novelty else ''}")
+        print("DATA:", matching_workstations)
 
-    return render_template("estado_ambientes.html", ambiente_puesto=ambiente_puesto, ws_idPuestoTrabajo=matching_workstations)
+        return render_template("estado_ambientes.html", ambiente_puesto=ambiente_puesto, ws_idPuestoTrabajo=matching_workstations, cadena_dict=cadena_dict)
+    
+    except requests.exceptions.RequestException as e:
+        print(f"Request error: {e}")
+        return "Error occurred during processing.", 500
+
 
 
 # LEARNING CLASSROOM STATUS
-@ambientes.route("estado/<idInstructor>", methods=["GET"])
-def testxx(idInstructor):
+@ambientes.route("estado", methods=["GET"])
+def testxx():
+    idInstructor = current_user.idInstructor
     instructors_by_idAmbiente_response = requests.get(f"http://127.0.0.1:5000/instructores/ambientes/{idInstructor}")
     clss_by_an_instructor = instructors_by_idAmbiente_response.json()
     print(f"Learning classrooms that belong to an accountant: \n{clss_by_an_instructor}")

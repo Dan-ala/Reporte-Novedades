@@ -115,4 +115,36 @@
 <script src="{{ url_for('static', filename='js/insert_novelties.js') }}"></script>
 {% endif %}
 
+
+<!-- REGISTRO NOVEDAD GENERAL -->
+{% if N == 2 %}
+<div class="createGeneralANovelty">
+<div class="w3-responsive">
+    <br>
+    <table class="w3-striped w3-centered">
+        <tr>
+            <td colspan="2" class="w3-green">CREANDO UNA NOVEDAD GENERAL...</td>
+        </tr>
+        <form id="novedadForm" name="mio" method="POST" class="w3-bordered" action="/novedades/i2"> <!-- Pass idElemento in the form action -->
+
+            <input type="hidden" id="idAmbiente" name="idAmbiente" value="{{ idAmbiente }}">
+            <tr>
+                <td>Descripción:</td>
+                <td>
+                    <input class="w3-input w3-border w3-hover-yellow" type="text" id="descripcion_novedad" name="descripcion_novedad" required maxlength="45">
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <button type="submit" id="navigateButton" class="w3-button w3-green w3-round">Grabar</button> <!-- Change type to submit -->
+                    <input type="button" class="w3-round w3-button w3-black" value="Regresar" onclick="history.back()">
+                </td>   
+            </tr>
+        </form>
+    </table>
+</div>
+</div>
+<script src="{{ url_for('static', filename='js/insert_general_novelty.js') }}"></script>
+{% endif %}
+
 {% endblock %}

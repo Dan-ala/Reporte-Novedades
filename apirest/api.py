@@ -5,6 +5,8 @@ import json
 from database.cnxSqlite import cnxsqlite  
 from config import configura 
 
+from flask_login import current_user
+
 from datetime import datetime
 import pytz
 
@@ -150,6 +152,17 @@ def ambi_pts():
     return json.dumps(todo)
 
 
+@app.route("/ambientes/pts/<id>")
+def ambi_pts_by_id(id):
+    sql = "SELECT * FROM ambiente_puesto WHERE idAmbiente = "+str(id)
+    con = cnxsqlite()
+    todo = con.Consultar("./novedades.db",sql)
+    return json.dumps(todo)
+
+
+
+
+
 @app.route("/puestos/trabajo/<id>")
 def pepe(id):
     sql="select * from puesto_trabajo where idPuestoTrabajo="+str(id)
@@ -212,6 +225,14 @@ def ListaUnUsuario(id):
     todo=con.Consultar("./novedades.db",sql)
     return json.dumps(todo)
 
+#filtering the data
+@app.route("/elementos/<id>")
+def ElementList(id):
+    sql="select * from elemento where created_by="+str(id)
+    con=cnxsqlite()
+    todo=con.Consultar("./novedades.db",sql)
+    return json.dumps(todo)
+
 
 @app.route("/pt/<id>")
 def ListaUnPT(id):
@@ -250,6 +271,20 @@ def insert_element_novelty():
     todo=con.Ejecutar("./novedades.db",sql)
     return "OK"
 
+@app.route("/novedades/i2", methods=['POST'])
+def insert_novelty2():   
+    datos = request.get_json()
+    idAmbiente = datos['idAmbiente']
+    descripcion_novedad = datos['descripcion_novedad']
+    date_novedad = get_local_time()
+    sql = "INSERT INTO novedades_generales (idAmbiente, descripcion_novedad, date_novedad) VALUES ('"+idAmbiente+"','"+descripcion_novedad+"','"+date_novedad+"')"
+    con = cnxsqlite()
+    todo=con.Ejecutar("./novedades.db",sql)
+    return "OK"
+
+
+
+
 
 
 
@@ -276,11 +311,12 @@ def CrearUsuario():
     idTipoElemento = datos['idTipoElemento']
     nombreElemento = datos['nombreElemento']
     barcode = datos['barcode']
+    created_by = datos['created_by']
 
-    sql = "INSERT INTO elemento (idTipoElemento, nombreElemento, barcode) VALUES ('"+idTipoElemento+"','"+nombreElemento+"','"+barcode+"')"
+    sql = "INSERT INTO elemento (idTipoElemento, nombreElemento, barcode, created_by) VALUES ('"+idTipoElemento+"','"+nombreElemento+"','"+barcode+"','"+created_by+"')"
     con = cnxsqlite()
     todo=con.Ejecutar("./novedades.db",sql)
-    return "OK" 
+    return "OK"
 
 #NEW LEARNING CLASSROOM:
 @app.route("/ambientes/i", methods=["POST"])
@@ -288,6 +324,7 @@ def CrearAmbiente():
     datos = request.get_json()
     nombreAmbiente = datos['nombreAmbiente']
     sql = "INSERT INTO ambiente (nombreAmbiente) VALUES ('"+nombreAmbiente+"')"
+    print(sql)
     con = cnxsqlite()
     todo = con.Ejecutar("./novedades.db", sql)
     return "OK"

@@ -1,4 +1,4 @@
-from flask import request
+from flask import request, redirect
 from flask import render_template
 
 from flask_login import current_user
@@ -35,7 +35,7 @@ def ListarTodos():
 
     instructor_pt_response = requests.get("http://127.0.0.1:5000/ambientes/pts")
     i = instructor_pt_response.json()
-    print(f"Initial Workstations List (i): {i}")
+    print(f"Initial Workstations List: {i}")
 
     elements = requests.get("http://127.0.0.1:5000/puestos/trabajo/add/elements").json()
 
@@ -45,6 +45,7 @@ def ListarTodos():
     arias = []
     cadena = []
     can = 0
+    elementos = []
 
     if idTipoInstructor == 1:
         instructors_by_idAmbiente_response = requests.get(f"http://127.0.0.1:5000/instructores/ambientes/{idInstructor}")
@@ -56,6 +57,11 @@ def ListarTodos():
         can = len(cadena)
 
         ele = requests.get("http://127.0.0.1:5000/usua/to").json()
+
+        element_filter = requests.get(f"http://127.0.0.1:5000/elementos/{idTipoInstructor}").json()
+        for q in element_filter:
+            elementos = q
+            print ("Data filtered: ",elementos)
 
         # Loop through each classroom that belongs to the instructor
         for classroom in clss_by_an_instructor:
@@ -81,18 +87,10 @@ def ListarTodos():
                             # Get the name of the element
                             nombreElemento = next((e[2] for e in ele if e[0] == idElemento), None)
                             # Add the workstation and element details to the list
-                            arias.append((idInstructor_classroom, ws_idPuestoTrabajo, ws_name, nombreElemento, idElemento))
+                            arias.append((ws_idPuestoTrabajo, ws_name, nombreElemento, idElemento))
 
-                            for l in arias:
-                                if l[4] not in ele:
-                                    print ("No está.")
-                                else:
-                                    print ("Sí está, pero el elemento sí fue eliminado.")
+                            print(f"Data from arias variable: {ws_idPuestoTrabajo}: {ws_name} {nombreElemento} {idElemento}")
 
-                            
-
-                    print(f"Workstation that belongs to {idInstructor_classroom}: {ws_name} \n These are the elements: {nombreElemento}")
-                    print ("Data from arias variable",arias)
 
 
     elif idTipoInstructor == 3:
@@ -100,7 +98,7 @@ def ListarTodos():
         cadena = list(u1.ListarTodos())
         can = len(cadena)
 
-    return render_template("niveles.html", N=0, tipo_elementos=tipo_elementos, cadena=cadena, can=can, arias=arias)
+    return render_template("niveles.html", N=0, tipo_elementos=tipo_elementos, cadena=cadena, can=can, arias=arias, elementos=elementos)
 
 
 
@@ -108,27 +106,21 @@ def ListarTodos():
 #NEW ELEMENT:
 @elementos.route("i", methods=["POST"])
 def nivelInserta():
+    idInstructor = current_user.idInstructor
     idTipoElemento = request.form.get('idTipoElemento')
     nombreElemento = request.form.get('nombreElemento')
     barcode = request.form.get('barcode')
+    created_by = idInstructor
     u1 = Usuario("http://127.0.0.1:5000/usua")
     datos = {   
         "idTipoElemento": idTipoElemento,
         "nombreElemento": nombreElemento,
         "barcode": barcode,
+        "create_by": created_by
     }
     u1.Inserte(datos)
-    msgitos = "Elemento creado satisfactoriamente"
-
-    idInstructor = current_user.idInstructor
-    idTipoInstructor = current_user.idTipoInstructor
-    if idTipoInstructor == 1:
-        ListarTodos()
-        msgitos = "Lo insertó un cuentadante"
-    elif idTipoInstructor == 3:
-        ListarTodos()
-        msgitos = "Lo insertó un admin"
-    return render_template("alertas.html", msgito=msgitos)
+    # msgitos = "Elemento creado satisfactoriamente"
+    return redirect('/elementos')
 
 
 

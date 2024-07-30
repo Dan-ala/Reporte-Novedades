@@ -43,6 +43,7 @@
                 </tr>
                 <tr>
                     <form name="mio" method="POST" class="w3-bordered">
+                        <input type="hidden" id="idInstructor" name="idInstructor" value="{{ current_user }}">
                         <td>Seleccione el tipo de elemento:</td>
                         <td>
                             <select name="idTipoElemento" id="idTipoElemento" class="w3-select" required>
@@ -67,9 +68,10 @@
                 </tr>
                 <tr>
                     <td colspan="2">
-                        <input type="button" value="Grabar" class="w3-button w3-round w3-green" onclick="Va('i')">
+                        <input type="submit" value="Grabar" class="w3-button w3-round w3-green">
                         <input type="button" value="Regresar" onclick="history.back()" class="w3-round w3-button w3-black">
                     </td>
+
                 </tr>
             </table>
         </form>
@@ -90,14 +92,14 @@
         {% for row in arias %}
         <tr>
             <!-- IF CLAUSE -->
-            {% if row[3] == None %}
+            {% if row[2] == None %}
             {% else %}
-                <td id="k" data-cell="Nombre del Elemento">{{ row[3] }}</td>
+                <td id="k" data-cell="Nombre del Elemento">{{ row[2] }}</td>
 
                 <td>
-                    <button class="w3-button w3-round w3-blue" onclick="Ir1('/elementos/e/{{ row[4] }}')"><i class="fa fa-pencil"></i>&nbsp;</button></td>  
+                    <button class="w3-button w3-round w3-blue" onclick="Ir1('/elementos/e/{{ row[3] }}')"><i class="fa fa-pencil"></i>&nbsp;</button></td>  
                 <td>
-                    <button class="w3-button w3-round w3-red" onclick='Confirmar("Desea Borrar el registro?","/elementos/d/{{row[4]}}")'>
+                    <button class="w3-button w3-round w3-red" onclick='Confirmar("Desea Borrar el registro?","/elementos/d/{{row[3]}}")'>
                         <i class="fa fa-trash"></i>&nbsp;</button>
                 </td>  
               </tr>
