@@ -79,6 +79,7 @@
 <br><br>
 <button class="w3-button w3-round w3-red" onclick='Confirmar("Desea Borrar todos los registros?","/novedades/niveles/d")'>Borrar Novedades</button>
 <input type="button" class="w3-button w3-round w3-black" value="Regresar" onclick="history.back()">
+<button id="" class="w3-button w3-round w3-blue">Historial Novedades</button> 
 
 <script src="{{ url_for('static', filename='js/pagination.js') }}"></script>
 {% endif %}
@@ -131,7 +132,7 @@
             <tr>
                 <td>Descripción:</td>
                 <td>
-                    <input class="w3-input w3-border w3-hover-yellow" type="text" id="descripcion_novedad" name="descripcion_novedad" required maxlength="45">
+                    <input class="w3-input w3-border w3-hover-yellow" type="text" id="descripcion_novedad" name="descripcion_novedad" required maxlength="50">
                 </td>
             </tr>
             <tr>

@@ -159,9 +159,6 @@ def new_novelty():
 
 
 
-
-
-
 #GENERAL NOVELTY
 @novedades.route("i2", methods=["GET","POST"])
 def gn():
@@ -177,6 +174,9 @@ def gn():
     nove.Inserte(datos)
     msgitos = "Novedad General registrada"
     return render_template("alertas.html", msgito=msgitos, idAmbiente=idAmbiente)
+
+#HISTORIAL GENERAL
+@novedades.route
 
 
 
