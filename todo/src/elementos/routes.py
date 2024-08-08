@@ -24,81 +24,15 @@ def nivel(id=0):
 
     
 #LEVEL LIST
-@elementos.route("", methods=["GET"])
+@elementos.route("",methods=["GET"])
 def ListarTodos():
+    u1= Usuario("http://127.0.0.1:5000/usua")
     response = requests.get("http://127.0.0.1:5000/usua/tipo")
     tipo_elementos = response.json()
-
-    ambientes_response = requests.get("http://127.0.0.1:5000/ambientes/add/pts")
-    ambiente_puesto = ambientes_response.json()
-    print(f"Ambiente Puesto: {ambiente_puesto}")
-
-    instructor_pt_response = requests.get("http://127.0.0.1:5000/ambientes/pts")
-    i = instructor_pt_response.json()
-    print(f"Initial Workstations List: {i}")
-
-    elements = requests.get("http://127.0.0.1:5000/puestos/trabajo/add/elements").json()
-
-    idInstructor = current_user.idInstructor
-    idTipoInstructor = current_user.idTipoInstructor
-
-    arias = []
-    cadena = []
-    can = 0
-    elementos = []
-
-    if idTipoInstructor == 1:
-        instructors_by_idAmbiente_response = requests.get(f"http://127.0.0.1:5000/instructores/ambientes/{idInstructor}")
-        clss_by_an_instructor = instructors_by_idAmbiente_response.json()
-        print(f"Learning classrooms that belong to an accountant: \n{clss_by_an_instructor}")
-
-        u1 = Usuario("http://127.0.0.1:5000/usua")
-        cadena = list(u1.ListarTodos())
-        can = len(cadena)
-
-        ele = requests.get("http://127.0.0.1:5000/usua/to").json()
-
-        element_filter = requests.get(f"http://127.0.0.1:5000/elementos/{idTipoInstructor}").json()
-        for q in element_filter:
-            elementos = q
-            print ("Data filtered: ",elementos)
-
-        # Loop through each classroom that belongs to the instructor
-        for classroom in clss_by_an_instructor:
-            idInstructor_classroom = classroom[0]  # idInstructor from the classroom list
-            idAmbiente = classroom[1]  # idAmbiente from the classroom list
-
-            # Check against each workstation
-            for workstation in i:
-                ws_idAmbiente = workstation[0]  # idAmbiente from the workstation list
-                ws_idPuestoTrabajo = workstation[1]  # idPuestoTrabajo from the workstation list
-
-                # Check if the workstation belongs to the current user's classroom
-                if idAmbiente == ws_idAmbiente:
-                    # Find the name of the puesto trabajo
-                    ws_name = next((x[3] for x in ambiente_puesto if x[2] == ws_idPuestoTrabajo), None)
-
-                    # Get elements for this workstation
-                    for x in elements:
-                        idPuestoTrabajo_element = x[0]
-                        idElemento = x[1]
-
-                        if idPuestoTrabajo_element == ws_idPuestoTrabajo:
-                            # Get the name of the element
-                            nombreElemento = next((e[2] for e in ele if e[0] == idElemento), None)
-                            # Add the workstation and element details to the list
-                            arias.append((ws_idPuestoTrabajo, ws_name, nombreElemento, idElemento))
-
-                            print(f"Data from arias variable: {ws_idPuestoTrabajo}: {ws_name} {nombreElemento} {idElemento}")
-
-
-
-    elif idTipoInstructor == 3:
-        u1 = Usuario("http://127.0.0.1:5000/usua")
-        cadena = list(u1.ListarTodos())
-        can = len(cadena)
-
-    return render_template("niveles.html", N=0, tipo_elementos=tipo_elementos, cadena=cadena, can=can, arias=arias, elementos=elementos)
+    cadena = list(u1.ListarTodos())
+    can=len(cadena)
+    id=0
+    return render_template("niveles.html",N=0,tipo_elementos=tipo_elementos,cadena=cadena,can=can)
 
 
 
@@ -106,17 +40,14 @@ def ListarTodos():
 #NEW ELEMENT:
 @elementos.route("i", methods=["POST"])
 def nivelInserta():
-    idInstructor = current_user.idInstructor
     idTipoElemento = request.form.get('idTipoElemento')
     nombreElemento = request.form.get('nombreElemento')
     barcode = request.form.get('barcode')
-    created_by = idInstructor
     u1 = Usuario("http://127.0.0.1:5000/usua")
     datos = {   
         "idTipoElemento": idTipoElemento,
         "nombreElemento": nombreElemento,
-        "barcode": barcode,
-        "create_by": created_by
+        "barcode": barcode
     }
     u1.Inserte(datos)
     # msgitos = "Elemento creado satisfactoriamente"

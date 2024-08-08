@@ -46,14 +46,13 @@ def createDB():
         idTipoElemento INTEGER NOT NULL,
         nombreElemento TEXT NOT NULL,
         barcode TEXT NOT NULL,
-        created_by INTEGER NOT NULL,
         FOREIGN KEY(idTipoElemento) REFERENCES tipo_elemento(idTipoElemento)
     );
 
-    INSERT INTO elemento (idTipoElemento, nombreElemento, barcode, created_by)
-    VALUES (1, "Monitor", "123456", 1),
-           (2, "Mouse", "789012", 1),
-           (1, "Keyboard", "345678", 3);
+    INSERT INTO elemento (idTipoElemento, nombreElemento, barcode)
+    VALUES (1, "Monitor", "123456"),
+           (2, "Mouse", "789012"),
+           (1, "Keyboard", "345678");
 
     CREATE TABLE puesto_trabajo (
         idPuestoTrabajo INTEGER PRIMARY KEY,
@@ -117,14 +116,6 @@ def createDB():
         date_novedad TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         FOREIGN KEY(idPuestoTrabajo) REFERENCES puesto_trabajo(idPuestoTrabajo),
         FOREIGN KEY(idElemento) REFERENCES elemento(idElemento)
-    );
-
-    CREATE TABLE novedades_generales (
-        idNG INTEGER PRIMARY KEY,
-        idAmbiente INTEGER,
-        descripcion_novedad TEXT NOT NULL,
-        date_novedad TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        FOREIGN KEY(idAmbiente) REFERENCES ambiente(idAmbiente)
     );
 
 

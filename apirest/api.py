@@ -311,9 +311,8 @@ def CrearUsuario():
     idTipoElemento = datos['idTipoElemento']
     nombreElemento = datos['nombreElemento']
     barcode = datos['barcode']
-    created_by = datos['created_by']
 
-    sql = "INSERT INTO elemento (idTipoElemento, nombreElemento, barcode, created_by) VALUES ('"+idTipoElemento+"','"+nombreElemento+"','"+barcode+"','"+created_by+"')"
+    sql = "INSERT INTO elemento (idTipoElemento, nombreElemento, barcode) VALUES ('"+idTipoElemento+"','"+nombreElemento+"','"+barcode+"')"
     con = cnxsqlite()
     todo=con.Ejecutar("./novedades.db",sql)
     return "OK"
