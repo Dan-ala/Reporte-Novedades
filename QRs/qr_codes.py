@@ -1,6 +1,6 @@
 import qrcode
 #Generate the QR code
-img = qrcode.make("http://192.168.107.192:8000/puesto_trabajo/pt/1")
+img = qrcode.make("http://192.168.107.192:8000/puesto_trabajo/pt/4")
 
 #Save the imng as an image file like (.jpg)
-img.save('PT1.jpg')
+img.save('PT4.jpg')

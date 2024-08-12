@@ -175,15 +175,6 @@ def gn():
     msgitos = "Novedad General registrada"
     return render_template("alertas.html", msgito=msgitos, idAmbiente=idAmbiente)
 
-#HISTORIAL GENERAL
-@novedades.route
-
-
-
-
-
-
-
 
 
 
@@ -240,18 +231,21 @@ def NoveltyList():
 
                     for novelty in novedades:
                         if novelty[1] == ws_idPuestoTrabajo:
+                            idNolty = novelty[0]
                             novelty_elements = [elem[0] for elem in id_elemento if elem[0] == novelty[2]]
                             novelty_description = novelty[3]
                             novelty_date = novelty[4]
-                            matching_workstations.append((ws_name, novelty_elements, novelty_description, novelty_date))
+                            matching_workstations.append((idNolty, ws_name, novelty_elements, novelty_description, novelty_date))
+                            print (matching_workstations)
 
     elif idTipoInstructor == 3:
         for novelty in novedades:
+            idNovedad = novelty[0]
             idPT = novelty[1]
             idElemento = novelty[2]
             description = novelty[3]
             date = novelty[4]
-            matching_workstations.append((idPT, idElemento, description, date))
+            matching_workstations.append((idNovedad, idPT, idElemento, description, date))
 
     start_idx = (page - 1) * per_page
     end_idx = start_idx + per_page
@@ -308,12 +302,19 @@ def NovedadGeneral(idAmbiente):
 
 
 
-
-
 #DELETE ALL RECORDS FROM NOVELTUES TABLE
-@novedades.route("/niveles/d", methods = ["GET"])
-def BorraTodo():
-    hola = Usuario("http://127.0.0.1:5000/usua")
-    cadena = hola.BorraTodo()
-    msgitos = "Novedades eliminadas exitosamente"
-    return render_template("alertas.html", msgito=msgitos)
+# @novedades.route("/niveles/d", methods = ["GET"])
+# def BorraTodo():
+#     hola = Usuario("http://127.0.0.1:5000/usua")
+#     cadena = hola.BorraTodo()
+#     msgitos = "Novedades eliminadas exitosamente"
+#     return render_template("alertas.html", msgito=msgitos)
+
+
+#ELIMINAR UNA NOVEDAD
+@novedades.route("d/<id>", methods=["GET"])
+def BorraNovedad(id):
+    novedades = Usuario("http://127.0.0.1:5000/novedades")
+    cadena=novedades.Borra(id)
+    msgitos="Novedad borrado satisfactoriamente"
+    return render_template("alertas.html",msgito=msgitos)

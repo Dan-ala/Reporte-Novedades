@@ -34,37 +34,44 @@
 
 {% if N == 0 %}
 <!-- EDILISTAR REGISTROS -->
-<table id="myTable" class="w3-table w3-striped w3-border" border="1">   
+<table id="myTable" class="w3-table w3-striped" border="1" style="width: 100%;">
     <thead>
         <tr>
             <th scope="col">Puesto de Trabajo</th>
             <th scope="col">Elemento</th>
             <th scope="col">Descripción</th>
             <th scope="col">Fecha de la novedad</th>
+            <th scope="col">Delete</th>
         </tr>
     </thead>
     <tbody>
         {% if current_user.is_authenticated and current_user.idTipoInstructor == 1 %}
         {% for x in cadena %}
         <tr>
-            <td>{{ x[0] }}</td> <!-- Puesto de Trabajo Name -->
-            <td>
-                {% for elem in x[1] %}
+            <td data-cel="Puesto de Trabajo">{{ x[1] }}</td> <!-- Puesto de Trabajo Name -->
+            <td data-cel="Elemento">
+                {% for elem in x[2] %}
                     {{ idElemento_dict.get(elem, '') }}<br>
                 {% endfor %}
             </td>
-            <td>{{ x[2] }}</td> <!-- Descripción de la novedad -->
-            <td>{{ x[3] }}</td> <!-- Fecha de la novedad -->
+            <td data-cel="Descripción">{{ x[3] }}</td> <!-- Descripción de la novedad -->
+            <td data-cel="Fecha">{{ x[4] }}</td> <!-- Fecha de la novedad -->
+            <td id="k" data-cel="Eliminar">
+                <button class="btn w3-red w3-hover-yellow" onclick='Confirmar("Desea Borrar el la novedad?", "/novedades/d/{{ x[0] }}")' title="Borrar"><i class="fa fa-trash"></i></button>
+            </td>
         </tr>
         {% endfor %}
 
         {% elif current_user.is_authenticated and current_user.idTipoInstructor == 3 %}
         {% for x in cadena %}
         <tr>
-            <td>{{ idPT_dict.get(x[0], '') }}</td> <!-- Puesto de Trabajo Name -->
-            <td>{{ idElemento_dict.get(x[1], '') }}</td> <!-- Elemento -->
-            <td>{{ x[2] }}</td> <!-- Descripción -->
-            <td>{{ x[3] }}</td> <!-- Fecha -->
+            <td data-cel="Puesto de Trabajo">{{ idPT_dict.get(x[1], '') }}</td> <!-- Puesto de Trabajo Name -->
+            <td data-cel="Elemento">{{ idElemento_dict.get(x[2], '') }}</td> <!-- Elemento -->
+            <td data-cel="Descripción">{{ x[3] }}</td> <!-- Descripción -->
+            <td data-cel="Fecha">{{ x[4] }}</td> <!-- Fecha -->
+            <td id="k" data-cel="Eliminar">
+                <button class="btn w3-red w3-hover-yellow" onclick='Confirmar("Desea Borrar el la novedad?", "/novedades/d/{{ x[0] }}")' title="Borrar"><i class="fa fa-trash"></i></button>
+            </td>
         </tr>
         {% endfor %}
         {% endif %}

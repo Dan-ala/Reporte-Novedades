@@ -464,12 +464,14 @@ def BorrarUsuario(id):
     return "OK"
 
 #DELETE WHOLE NOVELTIES
-@app.route("/usua/d", methods = ['DELETE'])
-def borrar_todas_las_novedades():
-    sql = "DELETE FROM novedades"
+@app.route("/novedades/d/<id>", methods = ['DELETE'])
+def borrar_todas_las_novedades(id):
+    sql = "DELETE FROM novedades WHERE idNovedad="+str(id)
     con = cnxsqlite()
     todo = con.Ejecutar("./novedades.db", sql)
     return "YOU'VE DELETED ALL THE RECORDS"
+
+
 
 #DELETE LEARNING CLASSROOM:
 @app.route("/ambientes/d/<id>", methods = ['DELETE'])

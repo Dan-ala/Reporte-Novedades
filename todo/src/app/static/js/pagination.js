@@ -38,17 +38,18 @@ async function displayTable(page) {
         let elementosHTML = '';
 
         // Handle different data formats
-        if (Array.isArray(item[1])) {
-            elementosHTML = item[1].map(elem => `${data.idElemento_dict[elem]}`).join('<br>');
+        if (Array.isArray(item[2])) {
+            elementosHTML = item[2].map(elem => `${data.idElemento_dict[elem]}`).join('<br>');
         } else {
             elementosHTML = data.idElemento_dict[item[1]];
         }
 
         row.innerHTML = `
-            <td>${data.idPT_dict[item[0]] || item[0]}</td>
+            <td>${data.idPT_dict[item[1]] || item[1]}</td>
             <td>${elementosHTML}</td>
-            <td>${item[2]}</td>
             <td>${item[3]}</td>
+            <td>${item[4]}</td>
+            <td><button class="btn w3-red w3-hover-yellow" onclick='Confirmar("Desea Borrar el novedad?", "/novedades/d/${item[0]}")' title="Borrar"><i class="fa fa-trash"></i></button></td>
         `;
         tableBody.appendChild(row);
     });

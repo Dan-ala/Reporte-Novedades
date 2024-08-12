@@ -1,5 +1,6 @@
 from flask_login import UserMixin
 import json,requests
+#import datetime
 class Usuario:
     url=None
     res=None
@@ -33,7 +34,7 @@ class Usuario:
     def Borra(self,cual):
         response = requests.delete(self.url+"/d/"+str(cual))
     def BorraTodo(self):
-        response = requests.delete(self.url+"/d")
+        response = requests.delete(self.url+"/d/"+str())
     def Actualiza(self,data):
         response = requests.put(self.url+"/u", json=data)
 
